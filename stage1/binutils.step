@@ -4,11 +4,11 @@ cd ${STRAP_BUILD_DIR}
 
 extract_source_pkg binutils
 
-mkdir -p ${STRAP_BUILD_DIR}/binutils-build
+cd ${STRAP_BUILD_DIR}/binutils-*
 
-cd ${STRAP_BUILD_DIR}/binutils-build
+mkdir -p binutils-build && cd binutils-build
 
-../binutils-*/configure \
+../configure \
 	--prefix=${STRAP_STAGE1_INSTALL_DIR} \
     --build=$STRAP_HOST \
     --host=$STRAP_HOST \
