@@ -10,7 +10,7 @@ mkdir -p binutils-build && cd binutils-build
 
 msg "Configuring binutils..."
 
-../configure \
+../configure $STRAP_TARGET_BINUTILOPTS \
 	--prefix=$STRAP_STAGE1_INSTALL_DIR \
     --build=$STRAP_HOST \
     --host=$STRAP_HOST \

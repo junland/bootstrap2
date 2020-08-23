@@ -3,6 +3,7 @@
 export STRAP_TARGET="x86_64"
 export STRAP_HOST=$(echo ${MACHTYPE} | sed "s/-[^-]*/-cross/")
 export STRAP_TARGET_GCCOPTS="--with-arch=x86-64 --with-tune=generic --enable-cet=auto"
+export STRAP_TARGET_BINUTILOPTS="--enable-targets=x86_64-pep"
 export STRAP_TARGET_LDFLAGS=""
 export STRAP_TRIPLET="x86_64-bootstrap-linux-gnu"
 export STRAP_TARGET_KARCH="x86_64"
