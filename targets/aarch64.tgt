@@ -1,8 +1,7 @@
 #!/bin/true
 
-export STRAP_TARGET="aarch64"
+export STRAP_TARGET="aarch64-bootstrap-linux-gnu"
 export STRAP_HOST=$(echo ${MACHTYPE} | sed "s/-[^-]*/-cross/")
 export STRAP_TARGET_GCCOPTS="--with-abi=lp64 --with-arch=armv8-a --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
 export STRAP_TARGET_LDFLAGS=""
-export STRAP_TRIPLET="aarch64-bootstrap-linux-gnu"
 export STRAP_TARGET_KARCH="arm64"
