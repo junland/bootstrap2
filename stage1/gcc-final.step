@@ -26,7 +26,7 @@ cd ${STRAP_BUILD_DIR}/gcc-build
 unset CC CXX AR AS RANLIB LD STRIP OBJCOPY OBJDUMP
 
 ../gcc-*/configure AR=ar LDFLAGS="-Wl,-rpath,$STRAP_STAGE1_INSTALL_DIR/lib " \
-    --prefix=$STRAP_TOOLS \
+    --prefix=${STRAP_STAGE1_INSTALL_DIR} \
     --build=$STRAP_HOST \
     --host=$STRAP_HOST \
     --target=$STRAP_TARGET \
