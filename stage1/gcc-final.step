@@ -7,9 +7,9 @@ extract_source_pkg mpfr
 extract_source_pkg mpc
 extract_source_pkg gmp
 
-mv ${STRAP_BUILD_DIR}/mpfr-* ${STRAP_BUILD_DIR}/gcc-*/mpfr
-mv ${STRAP_BUILD_DIR}/mpc-* ${STRAP_BUILD_DIR}/gcc-*/mpc
-mv ${STRAP_BUILD_DIR}/gmp-* ${STRAP_BUILD_DIR}/gcc-*/gmp
+ln -sv ${STRAP_BUILD_DIR}/mpfr-* ${STRAP_BUILD_DIR}/gcc-*/mpfr
+ln -sv ${STRAP_BUILD_DIR}/mpc-* ${STRAP_BUILD_DIR}/gcc-*/mpc
+ln -sv ${STRAP_BUILD_DIR}/gmp-* ${STRAP_BUILD_DIR}/gcc-*/gmp
 
 mkdir -p ${STRAP_BUILD_DIR}/gcc-build
 
