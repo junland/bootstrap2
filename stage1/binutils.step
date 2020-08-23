@@ -9,11 +9,11 @@ mkdir -p ${STRAP_BUILD_DIR}/binutils-build
 cd ${STRAP_BUILD_DIR}/binutils-build
 
 ../binutils-*/configure \
-	--prefix=$STRAP_TOOLS \
+	--prefix=${STRAP_STAGE1_INSTALL_DIR} \
     --build=$STRAP_HOST \
     --host=$STRAP_HOST \
     --target=$STRAP_TARGET \
-    --with-sysroot=$STRAP_TOOLS/sysroot \
+    --with-sysroot=${STRAP_STAGE1_INSTALL_DIR}/sysroot \
     --disable-multilib
 
 make configure-host
