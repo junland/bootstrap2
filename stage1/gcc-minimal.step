@@ -46,6 +46,10 @@ unset CC CXX AR AS RANLIB LD STRIP OBJCOPY OBJDUMP
     --disable-multilib \
     $STRAP_TARGET_GCCOPTS
 
+msg "Building gcc-minimal..."
+
 make -j${STRAP_PJOBS}
+
+msg "Installing gcc-minimal..."
 
 make -j${STRAP_PJOBS} install

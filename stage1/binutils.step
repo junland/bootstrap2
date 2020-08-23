@@ -9,16 +9,22 @@ cd ${STRAP_BUILD_DIR}/binutils-*
 mkdir -p binutils-build && cd binutils-build
 
 ../configure \
-	--prefix=${STRAP_STAGE1_INSTALL_DIR} \
+	--prefix=$STRAP_STAGE1_INSTALL_DIR \
     --build=$STRAP_HOST \
     --host=$STRAP_HOST \
     --target=$STRAP_TARGET \
-    --with-sysroot=${STRAP_STAGE1_INSTALL_DIR}/sysroot \
+    --with-sysroot=$STRAP_STAGE1_INSTALL_DIR/sysroot \
     --disable-multilib
+
+msg "Configureing host..."
 
 make configure-host
 
+msg "Building binutils..."
+
 make -j${STRAP_PJOBS} all
+
+msg "Install binutils..."
 
 make -j${STRAP_PJOBS} install
 
