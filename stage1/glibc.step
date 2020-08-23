@@ -1,0 +1,43 @@
+#!/bin/true
+
+cd ${STRAP_BUILD_DIR}
+
+export CC="$STRAP_TARGET-gcc"
+export CXX="$STRAP_TARGET-g++"
+export AR="$STRAP_TARGET-ar"
+export AS="$STRAP_TARGET-as"
+export RANLIB="$STRAP_TARGET-ranlib"
+export LD="$STRAP_TARGET-ld"
+export STRIP="$STRAP_TARGET-strip"
+export OBJCOPY="$STRAP_TARGET-objcopy"
+export OBJDUMP="$STRAP_TARGET-objdump"
+
+extract_source_pkg glibc
+
+mkdir -p ${STRAP_BUILD_DIR}/glibc-build
+
+cd ${STRAP_BUILD_DIR}/glibc-build
+
+echo "libc_cv_forced_unwind=yes" > $STRAP_BUILD_DIR/glibc-build/configparms
+echo "libc_cv_c_cleanup=yes" >> $STRAP_BUILD_DIR/glibc-build/configparms
+echo "libc_cv_ssp=no" >> $STRAP_BUILD_DIR/glibc-build/configparms
+echo "slibdir=/usr/lib" >> $STRAP_BUILD_DIR/glibc-build/configparms
+echo "rtlddir=/usr/lib" >> $STRAP_BUILD_DIR/glibc-build/configparms
+
+../glibc-2.31/configure CFLAGS="-O2 " CPPFLAGS="" CXXFLAGS="-O2 " LDFLAGS="" \
+    --prefix=/usr \
+    --target=$STRAP_TARGET \
+    --build=$STRAP_HOST \
+    --host=$STRAP_TARGET \
+    --with-headers=${STRAP_STAGE1_INSTALL_DIR}/sysroot/usr/include \
+    --libdir=/usr/lib \
+    --libexecdir=/usr/lib \
+    --enable-shared \
+    --disable-profile \
+    --without-cvs \
+    --without-gd \
+    --disable-werror
+
+make -j${STRAP_PJOBS} all
+
+make -j${STRAP_PJOBS} install install_root=${STRAP_STAGE1_INSTALL_DIR}/sysroot

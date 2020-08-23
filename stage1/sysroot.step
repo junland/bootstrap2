@@ -1,0 +1,3 @@
+#!/bin/true
+
+mkdir -vp ${STRAP_STAGE1_INSTALL_DIR}/sysroot

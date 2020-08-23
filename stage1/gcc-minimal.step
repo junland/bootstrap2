@@ -1,0 +1,51 @@
+#!/bin/true
+
+cd ${STRAP_BUILD_DIR}
+
+extract_source_pkg gcc
+extract_source_pkg mpfr
+extract_source_pkg mpc
+extract_source_pkg gmp
+
+mv ${STRAP_BUILD_DIR}/mpfr-* ${STRAP_BUILD_DIR}/gcc-*/mpfr
+mv ${STRAP_BUILD_DIR}/mpc-* ${STRAP_BUILD_DIR}/gcc-*/mpc
+mv ${STRAP_BUILD_DIR}/gmp-* ${STRAP_BUILD_DIR}/gcc-*/gmp
+
+mkdir -p ${STRAP_BUILD_DIR}/gcc-build
+
+cd gcc-*
+
+sed -i '/lp64=/s/lib64/lib/' gcc/config/aarch64/t-aarch64-linux
+
+sed -i '/m64=/s/lib64/lib/' gcc/config/i386/t-linux64
+
+patch -Np1 -i "$STRAP_PATCHES"/gcc-enable-cet-in-cross.patch
+
+cd ${STRAP_BUILD_DIR}/gcc-build
+
+unset CC CXX AR AS RANLIB LD STRIP OBJCOPY OBJDUMP
+
+../gcc-*/configure \
+    --prefix=$STRAP_TOOLS \
+    --build=$STRAP_HOST \
+    --host=$STRAP_HOST \
+    --target=$STRAP_TARGET \
+    --with-sysroot=$STRAP_STAGE1_INSTALL_DIR/sysroot \
+    --enable-languages=c \
+    --with-glibc-version=4.19 \
+    --with-newlib \
+    --without-headers \
+    --disable-shared \
+    --disable-threads \
+    --disable-libssp \
+    --disable-libatomic \
+    --disable-libgomp \
+    --disable-libmpx \
+    --disable-libquadmath \
+    --disable-werror \
+    --disable-multilib \
+    $STRAP_TARGET_GCCOPTS
+
+make -j${STRAP_PJOBS}
+
+make -j${STRAP_PJOBS} install

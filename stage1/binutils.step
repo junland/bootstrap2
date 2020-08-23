@@ -1,0 +1,24 @@
+#!/bin/true
+
+cd ${STRAP_BUILD_DIR}
+
+extract_source_pkg binutils
+
+mkdir -p ${STRAP_BUILD_DIR}/binutils-build
+
+cd ${STRAP_BUILD_DIR}/binutils-build
+
+../binutils-*/configure \
+	--prefix=$STRAP_TOOLS \
+    --build=$STRAP_HOST \
+    --host=$STRAP_HOST \
+    --target=$STRAP_TARGET \
+    --with-sysroot=$STRAP_TOOLS/sysroot \
+    --disable-multilib
+
+make configure-host
+
+make -j${STRAP_PJOBS} all
+
+make -j${STRAP_PJOBS} install
+

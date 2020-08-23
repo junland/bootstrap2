@@ -1,6 +1,7 @@
 #/usr/bin/env -S -i bash --norc --noprofile
 
 export STRAP_SELECTED_TARGET=${STRAP_SELECTED_TARGET:-"x86_64"}
+export STRAP_PJOBS=${STRAP_PJOBS:-"2"}
 
 unset CFLAGS
 unset CXXFLAGS

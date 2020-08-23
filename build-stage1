@@ -6,9 +6,10 @@
 
 check_target && download_sources && setup_dirs_stage1
 
-STEPS=(linux-headers)
+STEPS=(sysroot linux-headers binutils gcc-minimal glibc gcc-final)
 
 for step in ${STEPS[@]} ; do
+    clean_build_dir
     msg "Building $step for stage1 targeting $STRAP_SELECTED_TARGET"
-    . "${STRAP_ROOT_DIR}/stage1/${step}.step"
+    . "${STRAP_ROOT_DIR}/stage1/${step}.step" || msg_fail "Could not build $step on stage1"
 done
