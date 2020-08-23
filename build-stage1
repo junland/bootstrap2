@@ -1,0 +1,14 @@
+#/usr/bin/env -S -i bash --norc --noprofile
+
+. lib/env.sh
+. lib/functions.sh
+. targets/${STRAP_SELECTED_TARGET}.tgt
+
+check_target && download_sources && setup_dirs_stage1
+
+STEPS=(linux-headers)
+
+for step in ${STEPS[@]} ; do
+    msg "Building $step for stage1 targeting $STRAP_SELECTED_TARGET"
+    . "${STRAP_ROOT_DIR}/stage1/${step}.step"
+done

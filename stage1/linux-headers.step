@@ -1,0 +1,15 @@
+#!/bin/true
+
+echo "$STRAP_SELECTED_TARGET"
+
+echo "$STRAP_BUILD_DIR"
+
+clean_build_dir
+
+cd ${STRAP_BUILD_DIR}
+
+extract_source_pkg linux
+
+msg "here is env..."
+
+env
