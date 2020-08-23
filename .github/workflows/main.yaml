@@ -1,0 +1,46 @@
+name: Multi-Arch Bootstraper
+
+on:
+  push:
+  pull_request:
+    branches: [ master ]
+
+jobs:  
+  build:
+    name: Build toolchain and rootfs
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        target-arch: [x86_64, aarch64]
+    env:
+      ACTION_TGT_ARCH: ${{matrix.target-arch}}
+      STRAP_SELECTED_TARGET: ${{matrix.target-arch}}
+      DEBIAN_FRONTEND: noninteractive
+      SCP_USER: ${{ secrets.USERNAME }}
+      SCP_PASS: ${{ secrets.PASSWORD }}
+      SCP_HOST: ${{ secrets.HOST }}
+      SCP_PORT: ${{ secrets.PORT }}
+    steps:
+    ### Setup OS enviroment ###
+    - uses: actions/checkout@v2
+    - name: install / update deps if not installed
+      run: sudo apt update -y && sudo apt install sshpass rsync build-essential expect pkg-config libarchive-tools m4 gawk bc bison flex texinfo python3 perl libtool autoconf automake autopoint autoconf-archive mtools liblzma-dev libelf-dev libssl-dev zlib1g-dev zlib1g xz-utils lzip file curl wget gettext -y && sudo apt autoremove -y
+    - name: use bash instead of dash
+      run: sudo dpkg-reconfigure dash
+    - name: move bashrc file outside of current user
+      run: sudo mv -fv /etc/bash.bashrc /etc/bash.bashrc.NOUSE | true
+    ### Actually run bootstrap process ###
+    - name: build stage1
+      run: ./build-stage1
+    ### Upload artifacts ###
+    - name: change ownership and archive stage 1 rootfs
+      if: ${{ always() }}
+      run: sudo chown root:root -R ${GITHUB_WORKSPACE}/install/stage1 && sudo tar -cJf ${GITHUB_WORKSPACE}/stage-1-rootfs-$ACTION_TGT_ARCH.tar.xz -C ${GITHUB_WORKSPACE}/install/stage1 .
+    - name: prep for upload
+      run: cp ${GITHUB_WORKSPACE}/stage-1-rootfs-$ACTION_TGT_ARCH.tar.xz ${GITHUB_WORKSPACE}/stage-1-rootfs-$ACTION_TGT_ARCH-${{github.run_id}}.tar.xz
+    - uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: stage-1-rootfs-${{matrix.target-arch}}-${{github.run_id}}
+        path: ${{github.workspace}}/stage-1-rootfs-${{matrix.target-arch}}.tar.xz
