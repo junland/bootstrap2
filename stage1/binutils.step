@@ -8,23 +8,37 @@ cd ${STRAP_BUILD_DIR}/binutils-*
 
 mkdir -p binutils-build && cd binutils-build
 
+msg "Configuring binutils..."
+
 ../configure \
 	--prefix=$STRAP_STAGE1_INSTALL_DIR \
     --build=$STRAP_HOST \
     --host=$STRAP_HOST \
     --target=$STRAP_TARGET \
     --with-sysroot=$STRAP_STAGE1_INSTALL_DIR/sysroot \
-    --disable-multilib
+    --with-pic \
+	--with-system-zlib \
+    --enable-default-hash-style=gnu \
+	--enable-64-bit-bfd \
+	--enable-deterministic-archives \
+	--enable-gold \
+	--enable-ld=default \
+	--enable-lto \
+	--enable-plugins \
+	--enable-relro \
+	--enable-threads \
+    --disable-nls \
+	--disable-werror \
+    --disable-multilib 
 
-msg "Configureing host..."
+msg "Configuring host for binutils..."
 
-make configure-host
+make MAKEINFO=true configure-host
 
 msg "Building binutils..."
 
-make -j${STRAP_PJOBS} all
+make -j${STRAP_PJOBS} MAKEINFO=true all
 
 msg "Install binutils..."
 
-make -j${STRAP_PJOBS} install
-
+make -j${STRAP_PJOBS} MAKEINFO=true install
