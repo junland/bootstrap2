@@ -32,6 +32,8 @@ msg "Install pkgconf..."
 
 make -j${STRAP_PJOBS} install
 
-msg "Setting pkgconf as default pkg-config"
+msg "Setting pkgconf symlinks..."
 
-ln -svf pkgconf "${STRAP_STAGE1_INSTALL_DIR}/bin/pkg-config"
+ln -svf pkgconf "${STRAP_STAGE1_INSTALL_DIR}"/bin/pkg-config
+ln -svf pkgconf "${STRAP_STAGE1_INSTALL_DIR}"/bin/$STRAP_TARGET-pkg-config
+ln -svf pkgconf "${STRAP_STAGE1_INSTALL_DIR}"/bin/$STRAP_TARGET-pkgconf
