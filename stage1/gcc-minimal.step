@@ -46,6 +46,7 @@ unset CC CXX AR AS RANLIB LD STRIP OBJCOPY OBJDUMP
     --enable-checking=release \
 	--enable-clocale=generic \
     --without-headers \
+    --without-isl \
     --disable-shared \
     --disable-threads \
     --disable-libssp \

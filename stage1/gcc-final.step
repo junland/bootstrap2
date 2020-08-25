@@ -47,6 +47,7 @@ unset CC CXX AR AS RANLIB LD STRIP OBJCOPY OBJDUMP
     --enable-threads \
     --disable-werror \
 	--disable-multilib \
+    --without-isl \
     $STRAP_TARGET_GCCOPTS
 
 msg "Building gcc-minimal..."
