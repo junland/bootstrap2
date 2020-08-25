@@ -1,0 +1,37 @@
+#!/bin/true
+
+export PATH="$STRAP_STAGE1_INSTALL_DIR/bin:$STRAP_DEFAULT_PATH"
+
+cd ${STRAP_BUILD_DIR}
+
+extract_source_pkg pkgconf
+
+cd ${STRAP_BUILD_DIR}/pkgconf-*
+
+msg "Configuring pkgconf..."
+
+./autogen.sh
+
+./configure \ 
+    --prefix=${STRAP_STAGE1_INSTALL_DIR} \
+    --build="${STRAP_HOST}" \
+    --host="${STRAP_HOST}" \
+    --libdir=/usr/lib \
+    --bindir=/usr/bin \
+    --with-system-libdir=/usr/lib \
+    --with-system-includedir=/usr/include \
+    --includedir=/usr/include \
+    --enable-static \
+    --disable-shared
+
+msg "Building pkgconf..."
+
+make -j${STRAP_PJOBS}
+
+msg "Install pkgconf..."
+
+make -j${STRAP_PJOBS} install
+
+msg "Setting pkgconf as default pkg-config"
+
+ln -svf pkgconf "${STRAP_STAGE1_INSTALL_DIR}/bin/pkg-config"

@@ -15,3 +15,5 @@ for step in ${STEPS[@]} ; do
     msg "Building $step for stage1 targeting $STRAP_SELECTED_TARGET"
     . "${STRAP_ROOT_DIR}/stage1/${step}.step" || msg_fail "Could not build $step on stage1"
 done
+
+msg "Stage2 complete!"
