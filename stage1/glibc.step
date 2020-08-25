@@ -1,5 +1,7 @@
 #!/bin/true
 
+export PATH="$STRAP_STAGE1_INSTALL_DIR/bin:$STRAP_DEFAULT_PATH"
+
 cd ${STRAP_BUILD_DIR}
 
 export CC="$STRAP_TARGET-gcc"

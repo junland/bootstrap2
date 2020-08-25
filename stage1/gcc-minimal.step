@@ -32,6 +32,8 @@ cd ${STRAP_BUILD_DIR}/gcc-build
 
 unset CC CXX AR AS RANLIB LD STRIP OBJCOPY OBJDUMP
 
+msg "Configuring gcc-minimal..."
+
 ../gcc-${GCC_VER}/configure AR=ar \
     --prefix=${STRAP_STAGE1_INSTALL_DIR} \
     --libdir="$STRAP_STAGE1_INSTALL_DIR/lib" \

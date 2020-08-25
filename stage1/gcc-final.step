@@ -1,5 +1,7 @@
 #!/bin/true
 
+export PATH="$STRAP_STAGE1_INSTALL_DIR/bin:$STRAP_DEFAULT_PATH"
+
 cd ${STRAP_BUILD_DIR}
 
 GCC_VER=10.1.0
@@ -34,6 +36,8 @@ cd ${STRAP_BUILD_DIR}/gcc-build
 
 unset CC CXX AR AS RANLIB LD STRIP OBJCOPY OBJDUMP
 
+msg "Configuring gcc-final..."
+
 ../gcc-${GCC_VER}/configure AR=ar LDFLAGS="-Wl,-rpath,$STRAP_STAGE1_INSTALL_DIR/lib " \
     --prefix=${STRAP_STAGE1_INSTALL_DIR} \
     --libdir="$STRAP_STAGE1_INSTALL_DIR/lib" \
@@ -50,10 +54,10 @@ unset CC CXX AR AS RANLIB LD STRIP OBJCOPY OBJDUMP
     --without-isl \
     $STRAP_TARGET_GCCOPTS
 
-msg "Building gcc-minimal..."
+msg "Building gcc-final..."
 
 make -j${STRAP_PJOBS} all -C ${STRAP_BUILD_DIR}/gcc-build
 
-msg "Installing gcc-minimal..."
+msg "Installing gcc-final..."
 
 make -j${STRAP_PJOBS} install
