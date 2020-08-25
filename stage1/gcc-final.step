@@ -2,24 +2,29 @@
 
 cd ${STRAP_BUILD_DIR}
 
+GCC_VER=10.1.0
+MPFR_VER=4.1.0
+MPC_VER=1.1.0
+GMP_VER=6.2.0
+
 extract_source_pkg gcc
 extract_source_pkg mpfr
 extract_source_pkg mpc
 extract_source_pkg gmp
 
-mkdir -vp ${STRAP_BUILD_DIR}/gcc-*/{mpfr,mpc,gmp}
+mkdir -vp ${STRAP_BUILD_DIR}/gcc-${GCC_VER}/{mpfr,mpc,gmp}
 
-mv ${STRAP_BUILD_DIR}/mpfr-*/* ${STRAP_BUILD_DIR}/gcc-*/mpfr
-mv ${STRAP_BUILD_DIR}/mpc-*/* ${STRAP_BUILD_DIR}/gcc-*/mpc
-mv ${STRAP_BUILD_DIR}/gmp-*/* ${STRAP_BUILD_DIR}/gcc-*/gmp
+mv ${STRAP_BUILD_DIR}/mpfr-${MPFR_VER}/* ${STRAP_BUILD_DIR}/gcc-${GCC_VER}/mpfr
+mv ${STRAP_BUILD_DIR}/mpc-${MPC_VER}/* ${STRAP_BUILD_DIR}/gcc-${GCC_VER}/mpc
+mv ${STRAP_BUILD_DIR}/gmp-${GMP_VER}/* ${STRAP_BUILD_DIR}/gcc-${GCC_VER}/gmp
 
-cd gcc-*
+cd ${STRAP_BUILD_DIR}/gcc-${GCC_VER}
 
 sed -i '/lp64=/s/lib64/lib/' gcc/config/aarch64/t-aarch64-linux
 
 sed -i '/m64=/s/lib64/lib/' gcc/config/i386/t-linux64
 
-patch -Np1 -i "$STRAP_PATCHES"/gcc-enable-cet-in-cross.patch
+patch -Np1 -i "$STRAP_PATCHES_DIR"/gcc-enable-cet-in-cross.patch
 
 mkdir -p ${STRAP_BUILD_DIR}/gcc-build
 
@@ -27,7 +32,7 @@ cd ${STRAP_BUILD_DIR}/gcc-build
 
 unset CC CXX AR AS RANLIB LD STRIP OBJCOPY OBJDUMP
 
-../gcc-*/configure AR=ar LDFLAGS="-Wl,-rpath,$STRAP_STAGE1_INSTALL_DIR/lib " \
+../gcc-${GCC_VER}/configure AR=ar LDFLAGS="-Wl,-rpath,$STRAP_STAGE1_INSTALL_DIR/lib " \
     --prefix=${STRAP_STAGE1_INSTALL_DIR} \
     --build=$STRAP_HOST \
     --host=$STRAP_HOST \
