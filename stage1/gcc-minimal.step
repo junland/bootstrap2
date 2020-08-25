@@ -64,8 +64,8 @@ unset CC CXX AR AS RANLIB LD STRIP OBJCOPY OBJDUMP
 
 msg "Building gcc-minimal..."
 
-make -j${STRAP_PJOBS} all-gcc all-target-libgcc
+make -j${STRAP_PJOBS} all-gcc all-target-libgcc -C ${STRAP_BUILD_DIR}/gcc-build
 
 msg "Installing gcc-minimal..."
 
-make -j1 install install-gcc install-target-libgcc
+make -j1 install-gcc install-target-libgcc
