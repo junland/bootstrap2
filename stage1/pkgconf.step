@@ -1,7 +1,5 @@
 #!/bin/true
 
-export PATH="$STRAP_STAGE1_INSTALL_DIR/bin:$STRAP_DEFAULT_PATH"
-
 cd ${STRAP_BUILD_DIR}
 
 extract_source_pkg pkgconf

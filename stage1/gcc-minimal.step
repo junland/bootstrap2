@@ -5,6 +5,16 @@ MPFR_VER=4.1.0
 MPC_VER=1.1.0
 GMP_VER=6.2.0
 
+export CC="$STRAP_TARGET-gcc"
+export CXX="$STRAP_TARGET-g++"
+export AR="$STRAP_TARGET-ar"
+export AS="$STRAP_TARGET-as"
+export RANLIB="$STRAP_TARGET-ranlib"
+export LD="$STRAP_TARGET-ld"
+export STRIP="$STRAP_TARGET-strip"
+export OBJCOPY="$STRAP_TARGET-objcopy"
+export OBJDUMP="$STRAP_TARGET-objdump"
+
 extract_source_pkg gcc
 extract_source_pkg mpfr
 extract_source_pkg mpc
