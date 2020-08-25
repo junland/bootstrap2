@@ -30,7 +30,7 @@ make -j${STRAP_PJOBS}
 
 msg "Install pkgconf..."
 
-make -j${STRAP_PJOBS} install
+make -j${STRAP_PJOBS} DESTDIR="${STRAP_STAGE1_INSTALL_DIR}" install
 
 msg "Setting pkgconf symlinks..."
 
