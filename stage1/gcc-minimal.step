@@ -23,8 +23,8 @@ sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
 #sed -i '/lp64=/s/lib64/lib/' gcc/config/aarch64/t-aarch64-linux
 #sed -i '/m64=/s/lib64/lib/' gcc/config/i386/t-linux64
 
-patch -Np1 -i "$STRAP_PATCHES"/gcc-enable-cet-in-cross.patch
-patch -Np1 -i "$STRAP_PATCHES"/pure-64-bit.patch
+patch -Np1 -i "$STRAP_PATCHES_DIR"/gcc-enable-cet-in-cross.patch
+patch -Np1 -i "$STRAP_PATCHES_DIR"/pure-64-bit.patch
 
 mkdir -p ${STRAP_BUILD_DIR}/gcc-build
 
