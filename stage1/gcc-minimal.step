@@ -39,11 +39,18 @@ unset CC CXX AR AS RANLIB LD STRIP OBJCOPY OBJDUMP
     --enable-languages=c \
     --with-glibc-version=4.19 \
     --with-newlib \
+    --enable-checking=release \
+	--enable-clocale=generic \
     --without-headers \
     --disable-shared \
     --disable-threads \
     --disable-libssp \
     --disable-libatomic \
+    --disable-libstdcxx \
+    --disable-libsanitizer \
+    --disable-decimal-float \
+    --disable-libitm \
+    --disable-nls \
     --disable-libgomp \
     --disable-libmpx \
     --disable-libquadmath \
@@ -53,8 +60,8 @@ unset CC CXX AR AS RANLIB LD STRIP OBJCOPY OBJDUMP
 
 msg "Building gcc-minimal..."
 
-make -j${STRAP_PJOBS}
+make -j${STRAP_PJOBS} all-gcc all-target-libgcc
 
 msg "Installing gcc-minimal..."
 
-make -j${STRAP_PJOBS} install
+make -j1 install install-gcc install-target-libgcc
