@@ -13,7 +13,7 @@ msg "Configuring pkgconf..."
 ./autogen.sh
 
 ./configure \ 
-    --prefix=${STRAP_STAGE1_INSTALL_DIR} \
+    --prefix=/usr \
     --build="${STRAP_HOST}" \
     --host="${STRAP_HOST}" \
     --libdir=/usr/lib \
@@ -34,6 +34,6 @@ make -j${STRAP_PJOBS} install
 
 msg "Setting pkgconf symlinks..."
 
-ln -svf pkgconf "${STRAP_STAGE1_INSTALL_DIR}"/bin/pkg-config
-ln -svf pkgconf "${STRAP_STAGE1_INSTALL_DIR}"/bin/$STRAP_TARGET-pkg-config
-ln -svf pkgconf "${STRAP_STAGE1_INSTALL_DIR}"/bin/$STRAP_TARGET-pkgconf
+ln -svf "${STRAP_STAGE1_INSTALL_DIR}"/usr/bin/pkgconf "${STRAP_STAGE1_INSTALL_DIR}"/bin/pkg-config
+ln -svf "${STRAP_STAGE1_INSTALL_DIR}"/usr/bin/pkgconf "${STRAP_STAGE1_INSTALL_DIR}"/bin/$STRAP_TARGET-pkg-config
+ln -svf "${STRAP_STAGE1_INSTALL_DIR}"/usr/bin/pkgconf "${STRAP_STAGE1_INSTALL_DIR}"/bin/$STRAP_TARGET-pkgconf
