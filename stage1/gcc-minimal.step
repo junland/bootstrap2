@@ -1,5 +1,7 @@
 #!/bin/true
 
+set -e
+
 GCC_VER=10.1.0
 MPFR_VER=4.1.0
 MPC_VER=1.1.0
