@@ -10,7 +10,7 @@ cd ${STRAP_BUILD_DIR}
 
 extract_source_pkg pkgconf
 
-cd ${STRAP_BUILD_DIR}/pkgconf-*
+cd ${STRAP_BUILD_DIR}/pkgconf-pkgconf-
 
 msg "Configuring pkgconf..."
 
