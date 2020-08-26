@@ -13,7 +13,7 @@ STEPS=(sysroot linux-headers binutils gcc-minimal glibc gcc-final pkgconf)
 for step in ${STEPS[@]} ; do
     clean_build_dir
     msg "Building $step for stage1 targeting $STRAP_SELECTED_TARGET"
-    . "${STRAP_ROOT_DIR}/stage1/${step}.step" || msg_fail "Could not build $step on stage1"
+    env -S -i STRAP_SELECTED_TARGET="${STRAP_SELECTED_TARGET}" bash --norc --noprofile "stage1/${step}.step" || msg_fail "Building ${step} failed for stage1"
 done
 
 msg "Stage1 complete!"

@@ -1,6 +1,8 @@
 #!/bin/true
 
-set -e
+. lib/env.sh
+. lib/functions.sh
+. targets/${STRAP_SELECTED_TARGET}.tgt
 
 cd ${STRAP_BUILD_DIR}
 

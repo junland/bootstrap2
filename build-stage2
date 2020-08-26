@@ -12,8 +12,8 @@ STEPS=(linux-headers)
 
 for step in ${STEPS[@]} ; do
     clean_build_dir
-    msg "Building $step for stage1 targeting $STRAP_SELECTED_TARGET"
-    . "${STRAP_ROOT_DIR}/stage1/${step}.step" || msg_fail "Could not build $step on stage1"
+    msg "Building $step for stage2 targeting $STRAP_SELECTED_TARGET"
+    env -S -i STRAP_SELECTED_TARGET="${STRAP_SELECTED_TARGET}" bash --norc --noprofile "stage2/${step}.step" || msg_fail "Building ${step} failed for stage2"
 done
 
 msg "Stage2 complete!"
