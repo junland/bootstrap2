@@ -14,8 +14,6 @@ cd ${STRAP_BUILD_DIR}/pkgconf-*
 
 msg "Configuring pkgconf..."
 
-./autogen.sh
-
 ./configure \ 
     --prefix=/usr \
     --build="${STRAP_HOST}" \
