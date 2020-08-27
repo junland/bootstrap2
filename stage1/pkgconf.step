@@ -16,8 +16,8 @@ msg "Configuring pkgconf..."
 
 ./configure \ 
     --prefix=/usr \
-    --build="${STRAP_HOST}" \
-    --host="${STRAP_HOST}" \
+    --build=$STRAP_HOST \
+    --host=$STRAP_HOST \
     --libdir=/usr/lib \
     --bindir=/usr/bin \
     --with-system-libdir=/usr/lib \
