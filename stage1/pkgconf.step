@@ -14,7 +14,7 @@ cd ${STRAP_BUILD_DIR}/pkgconf-*
 
 msg "Configuring pkgconf..."
 
-./configure \ 
+./configure \
     --prefix=/usr \
     --build=$STRAP_HOST \
     --host=$STRAP_HOST \
