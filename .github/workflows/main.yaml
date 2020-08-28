@@ -33,14 +33,27 @@ jobs:
     ### Actually run bootstrap process ###
     - name: build stage1
       run: ./build-stage1
-    ### Upload artifacts ###
-    - name: change ownership and archive stage 1 rootfs
+    - name: build stage1
+      run: ./build-stage2
+    ### Upload artifacts for stage1 ###
+    - name: change ownership and archive stage1 rootfs
       if: ${{ always() }}
       run: sudo chown root:root -R ${GITHUB_WORKSPACE}/install/stage1 && sudo tar -cJf ${GITHUB_WORKSPACE}/stage-1-rootfs-$ACTION_TGT_ARCH.tar.xz -C ${GITHUB_WORKSPACE}/install/stage1 .
-    - name: prep for upload
+    - name: prep stage1 for upload
       run: cp ${GITHUB_WORKSPACE}/stage-1-rootfs-$ACTION_TGT_ARCH.tar.xz ${GITHUB_WORKSPACE}/stage-1-rootfs-$ACTION_TGT_ARCH-${{github.run_id}}.tar.xz
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
       with:
         name: stage-1-rootfs-${{matrix.target-arch}}-${{github.run_id}}
         path: ${{github.workspace}}/stage-1-rootfs-${{matrix.target-arch}}.tar.xz
+    ### Upload artifacts for stage2 ###
+    - name: change ownership and archive stage2 rootfs
+      if: ${{ always() }}
+      run: sudo chown root:root -R ${GITHUB_WORKSPACE}/install/stage2 && sudo tar -cJf ${GITHUB_WORKSPACE}/stage-2-rootfs-$ACTION_TGT_ARCH.tar.xz -C ${GITHUB_WORKSPACE}/install/stage2 .
+    - name: prep stage2 for upload
+      run: cp ${GITHUB_WORKSPACE}/stage-2-rootfs-$ACTION_TGT_ARCH.tar.xz ${GITHUB_WORKSPACE}/stage-2-rootfs-$ACTION_TGT_ARCH-${{github.run_id}}.tar.xz
+    - uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: stage-2-rootfs-${{matrix.target-arch}}-${{github.run_id}}
+        path: ${{github.workspace}}/stage-2-rootfs-${{matrix.target-arch}}.tar.xz
