@@ -37,5 +37,6 @@ make -j${STRAP_PJOBS} DESTDIR="${STRAP_STAGE1_INSTALL_DIR}" install
 msg "Setting pkgconf symlinks..."
 
 ln -svf "${STRAP_STAGE1_INSTALL_DIR}"/usr/bin/pkgconf "${STRAP_STAGE1_INSTALL_DIR}"/bin/pkg-config
+ln -svf "${STRAP_STAGE1_INSTALL_DIR}"/usr/bin/pkgconf "${STRAP_STAGE1_INSTALL_DIR}"/bin/pkgconf
 ln -svf "${STRAP_STAGE1_INSTALL_DIR}"/usr/bin/pkgconf "${STRAP_STAGE1_INSTALL_DIR}"/bin/$STRAP_TARGET-pkg-config
 ln -svf "${STRAP_STAGE1_INSTALL_DIR}"/usr/bin/pkgconf "${STRAP_STAGE1_INSTALL_DIR}"/bin/$STRAP_TARGET-pkgconf
