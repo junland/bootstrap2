@@ -33,7 +33,7 @@ jobs:
     ### Actually run bootstrap process ###
     - name: build stage1
       run: ./build-stage1
-    - name: build stage1
+    - name: build stage2
       run: ./build-stage2
     ### Upload artifacts for stage1 ###
     - name: change ownership and archive stage1 rootfs
