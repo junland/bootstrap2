@@ -6,9 +6,11 @@ set -e
 . lib/functions.sh
 . targets/${STRAP_SELECTED_TARGET}.tgt
 
+cd ${STRAP_BUILD_DIR}
+
 export PATH="$STRAP_STAGE1_INSTALL_DIR/bin:$STRAP_DEFAULT_PATH"
 
-cd ${STRAP_BUILD_DIR}
+GLIBC_VER=2.31
 
 export CC="$STRAP_TARGET-gcc"
 export CXX="$STRAP_TARGET-g++"
@@ -32,7 +34,9 @@ echo "libc_cv_ssp=no" >> $STRAP_BUILD_DIR/glibc-build/configparms
 echo "slibdir=/usr/lib" >> $STRAP_BUILD_DIR/glibc-build/configparms
 echo "rtlddir=/usr/lib" >> $STRAP_BUILD_DIR/glibc-build/configparms
 
-../glibc-2.31/configure CFLAGS="-O2 " CPPFLAGS="" CXXFLAGS="-O2 " LDFLAGS="" \
+msg "Configuring glibc..."
+
+../glibc-${GLIBC_VER}/configure CFLAGS="-O2 " CPPFLAGS="" CXXFLAGS="-O2 " LDFLAGS="" \
     --prefix=/usr \
     --target=$STRAP_TARGET \
     --build=$STRAP_HOST \
@@ -46,6 +50,10 @@ echo "rtlddir=/usr/lib" >> $STRAP_BUILD_DIR/glibc-build/configparms
     --without-gd \
     --disable-werror
 
+msg "Building glibc..."
+
 make -j${STRAP_PJOBS} all
 
-make -j${STRAP_PJOBS} install install_root=${STRAP_STAGE1_INSTALL_DIR}/sysroot
+msg "Installing glibc..."
+
+make -j${STRAP_PJOBS} install_root=${STRAP_STAGE1_INSTALL_DIR}/sysroot install 

@@ -6,14 +6,16 @@ set -e
 . lib/functions.sh
 . targets/${STRAP_SELECTED_TARGET}.tgt
 
-export PATH="$STRAP_STAGE1_INSTALL_DIR/bin:$STRAP_DEFAULT_PATH"
-
 cd ${STRAP_BUILD_DIR}
+
+export PATH="$STRAP_STAGE1_INSTALL_DIR/bin:$STRAP_DEFAULT_PATH"
 
 GCC_VER=10.1.0
 MPFR_VER=4.1.0
 MPC_VER=1.1.0
 GMP_VER=6.2.0
+
+unset CC CXX AR AS RANLIB LD STRIP OBJCOPY OBJDUMP
 
 extract_source_pkg gcc
 extract_source_pkg mpfr
