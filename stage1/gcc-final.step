@@ -66,3 +66,7 @@ make -j${STRAP_PJOBS} all -C ${STRAP_BUILD_DIR}/gcc-build
 msg "Installing gcc-final..."
 
 make -j${STRAP_PJOBS} install
+
+msg "Linking gcc for compatibility..."
+
+ln -sf $STRAP_TARGET-gcc "$STRAP_STAGE1_INSTALL_DIR"/bin/$STRAP_TARGET-cc
