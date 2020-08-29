@@ -1,4 +1,5 @@
 #!/bin/true
+GLIBC_VER=2.31
 
 set -e
 
@@ -9,8 +10,6 @@ set -e
 cd ${STRAP_BUILD_DIR}
 
 export PATH="$STRAP_STAGE1_INSTALL_DIR/bin:$STRAP_DEFAULT_PATH"
-
-GLIBC_VER=2.31
 
 export CC="$STRAP_TARGET-gcc"
 export CXX="$STRAP_TARGET-g++"
