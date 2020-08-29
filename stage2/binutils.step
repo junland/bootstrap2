@@ -34,16 +34,15 @@ msg "Configuring binutils..."
     --host=$STRAP_TARGET \
     --target=$STRAP_TARGET \
     --with-pic \
-	--with-system-zlib \
     --enable-default-hash-style=gnu \
-	--enable-64-bit-bfd \
-	--enable-deterministic-archives \
-	--enable-gold \
-	--enable-ld=default \
-	--enable-lto \
-	--enable-plugins \
-	--enable-relro \
-	--enable-threads \
+    --enable-64-bit-bfd \
+    --enable-deterministic-archives \
+    --enable-gold \
+    --enable-ld=default \
+    --enable-lto \
+    --enable-plugins \
+    --enable-relro \
+    --enable-threads \
     --disable-nls \
     --disable-werror \
     --disable-multilib
