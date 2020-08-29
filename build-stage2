@@ -8,7 +8,7 @@ set -e
 
 check_target && download_sources && setup_dirs_stage2
 
-STEPS=(root linux-headers)
+STEPS=(root linux-headers glibc binutils gcc)
 
 for step in ${STEPS[@]} ; do
     clean_build_dir

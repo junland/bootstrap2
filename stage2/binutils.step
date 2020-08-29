@@ -1,0 +1,61 @@
+#!/bin/true
+
+set -e
+
+. lib/env.sh
+. lib/functions.sh
+. targets/${STRAP_SELECTED_TARGET}.tgt
+
+cd ${STRAP_BUILD_DIR}
+
+export PATH="$STRAP_STAGE1_INSTALL_DIR/bin:$STRAP_DEFAULT_PATH"
+
+export CC="$STRAP_TARGET-gcc"
+export CXX="$STRAP_TARGET-g++"
+export AR="$STRAP_TARGET-ar"
+export AS="$STRAP_TARGET-as"
+export RANLIB="$STRAP_TARGET-ranlib"
+export LD="$STRAP_TARGET-ld"
+export STRIP="$STRAP_TARGET-strip"
+export OBJCOPY="$STRAP_TARGET-objcopy"
+export OBJDUMP="$STRAP_TARGET-objdump"
+
+extract_source_pkg binutils
+
+cd ${STRAP_BUILD_DIR}/binutils-*
+
+mkdir -p binutils-build && cd binutils-build
+
+msg "Configuring binutils..."
+
+../configure $STRAP_TARGET_BINUTILOPTS \
+    --prefix=/usr \
+    --build=$STRAP_HOST \
+    --host=$STRAP_TARGET \
+    --target=$STRAP_TARGET \
+    --with-pic \
+	--with-system-zlib \
+    --enable-default-hash-style=gnu \
+	--enable-64-bit-bfd \
+	--enable-deterministic-archives \
+	--enable-gold \
+	--enable-ld=default \
+	--enable-lto \
+	--enable-plugins \
+	--enable-relro \
+	--enable-threads \
+    --disable-nls \
+    --disable-werror \
+    --disable-multilib
+
+msg "Configuring host for binutils..."
+
+make MAKEINFO=true configure-host
+
+msg "Building binutils..."
+
+make -j${STRAP_PJOBS} MAKEINFO=true all
+
+msg "Install binutils..."
+
+make -j${STRAP_PJOBS} MAKEINFO="true" tooldir=/usr DESTDIR=${STRAP_STAGE2_INSTALL_DIR} install

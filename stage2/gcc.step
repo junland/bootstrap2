@@ -1,0 +1,94 @@
+#!/bin/true
+GCC_VER=10.1.0
+MPFR_VER=4.1.0
+MPC_VER=1.1.0
+GMP_VER=6.2.0
+
+set -e
+
+. lib/env.sh
+. lib/functions.sh
+. targets/${STRAP_SELECTED_TARGET}.tgt
+
+cd ${STRAP_BUILD_DIR}
+
+export PATH="$STRAP_STAGE1_INSTALL_DIR/bin:$STRAP_DEFAULT_PATH"
+
+export CC="$STRAP_TARGET-gcc"
+export CXX="$STRAP_TARGET-g++"
+export AR="$STRAP_TARGET-ar"
+export AS="$STRAP_TARGET-as"
+export RANLIB="$STRAP_TARGET-ranlib"
+export LD="$STRAP_TARGET-ld"
+export STRIP="$STRAP_TARGET-strip"
+export OBJCOPY="$STRAP_TARGET-objcopy"
+export OBJDUMP="$STRAP_TARGET-objdump"
+
+extract_source_pkg gcc
+extract_source_pkg mpfr
+extract_source_pkg mpc
+extract_source_pkg gmp
+
+mkdir -vp ${STRAP_BUILD_DIR}/gcc-${GCC_VER}/{mpfr,mpc,gmp}
+
+mv ${STRAP_BUILD_DIR}/mpfr-${MPFR_VER}/* ${STRAP_BUILD_DIR}/gcc-${GCC_VER}/mpfr
+mv ${STRAP_BUILD_DIR}/mpc-${MPC_VER}/* ${STRAP_BUILD_DIR}/gcc-${GCC_VER}/mpc
+mv ${STRAP_BUILD_DIR}/gmp-${GMP_VER}/* ${STRAP_BUILD_DIR}/gcc-${GCC_VER}/gmp
+
+cd ${STRAP_BUILD_DIR}/gcc-${GCC_VER}
+
+sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
+
+#sed -i '/lp64=/s/lib64/lib/' gcc/config/aarch64/t-aarch64-linux
+#sed -i '/m64=/s/lib64/lib/' gcc/config/i386/t-linux64
+
+patch -Np1 -i "$STRAP_PATCHES_DIR"/gcc-enable-cet-in-cross.patch
+patch -Np1 -i "$STRAP_PATCHES_DIR"/pure-64-bit.patch
+
+mkdir -p ${STRAP_BUILD_DIR}/gcc-build
+
+cd ${STRAP_BUILD_DIR}/gcc-build
+
+msg "Configuring gcc..."
+
+../gcc-${GCC_VER}/configure CC_FOR_TARGET="$CC" \
+    --prefix=/usr \
+    --libdir=/usr/lib \
+    --libexecdir=/usr/lib \
+    --build=$STRAP_HOST \
+    --host=$STRAP_TARGET \
+    --target=$STRAP_TARGET \
+    --with-pkgversion="Bootstrap Linux 0.0.0 for $STRAP_TARGET" \
+    --with-bugurl="https://github.com/junland/bootstrap/issues" \
+    --enable-languages=c,c++ \
+    --enable-__cxa_atexit \
+    --enable-clocale=gnu \
+    --enable-checking=release \
+    --enable-clocale=generic \
+    --enable-cet=auto \
+    --enable-threads=posix \
+    --enable-tls \
+    --enable-libstdcxx-time \
+    --enable-install-libiberty \
+    --enable-fully-dynamic-string \
+    --enable-default-ssp \
+    --enable-default-pie \
+    --enable-libssp \
+    --enable-shared \
+    --disable-symvers \
+    --disable-bootstrap \
+    --disable-libstdcxx-pch \
+    --disable-gnu-indirect-function \
+    --disable-libmudflap \
+    --disable-libsanitizer \
+    --disable-nls \
+    --disable-multilib \
+    $STRAP_TARGET_GCCOPTS
+
+msg "Building gcc..."
+
+make -j${STRAP_PJOBS} AS_FOR_TARGET="$AS" LD_FOR_TARGET="$LD" all -C ${STRAP_BUILD_DIR}/gcc-build
+
+msg "Installing gcc..."
+
+make -j1 DESTDIR=${STRAP_STAGE2_INSTALL_DIR} install
