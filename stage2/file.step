@@ -1,0 +1,46 @@
+#!/bin/true
+
+set -e
+
+. lib/env.sh
+. lib/functions.sh
+. targets/${STRAP_SELECTED_TARGET}.tgt
+
+cd ${STRAP_BUILD_DIR}
+
+export PATH="$STRAP_STAGE1_INSTALL_DIR/bin:$STRAP_DEFAULT_PATH"
+
+export CC="$STRAP_TARGET-gcc"
+export CXX="$STRAP_TARGET-g++"
+export AR="$STRAP_TARGET-ar"
+export AS="$STRAP_TARGET-as"
+export RANLIB="$STRAP_TARGET-ranlib"
+export LD="$STRAP_TARGET-ld"
+export STRIP="$STRAP_TARGET-strip"
+export OBJCOPY="$STRAP_TARGET-objcopy"
+export OBJDUMP="$STRAP_TARGET-objdump"
+
+extract_source_pkg file
+
+cd ${STRAP_BUILD_DIR}/file-*
+
+cat "${STRAP_FILES_DIR}/config.guess" > config.guess
+
+cat "${STRAP_FILES_DIR}/config.sub" > config.sub
+
+msg "Configuring file..."
+
+./configure \
+ --prefix=/usr \
+ --build=$STRAP_HOST \
+ --host=$STRAP_TARGET \
+ --target=$STRAP_TARGET \
+ --disable-fsect-man5
+
+msg "Building file..."
+
+make -j${STRAP_PJOBS} V=1
+
+msg "Installing file..."
+
+make -j${STRAP_PJOBS} DESTDIR=${STRAP_STAGE2_INSTALL_DIR} install
