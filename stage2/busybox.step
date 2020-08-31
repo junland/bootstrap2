@@ -1,0 +1,39 @@
+#!/bin/true
+
+set -e
+
+. lib/env.sh
+. lib/functions.sh
+. targets/${STRAP_SELECTED_TARGET}.tgt
+
+cd ${STRAP_BUILD_DIR}
+
+export PATH="$STRAP_STAGE1_INSTALL_DIR/bin:$STRAP_DEFAULT_PATH"
+
+extract_source_pkg busybox
+
+cd ${STRAP_BUILD_DIR}/busybox-*
+
+msg "Configuring busybox..."
+
+make -j1 mrproper
+
+cat "${STRAP_FILES_DIR}/busybox-stage2.config" > .config
+
+msg "Building busybox..."
+
+make -j${STRAP_PJOBS} V=1 ARCH="$STRAP_TARGET_KARCH" CROSS_COMPILE="${STRAP_TARGET}-" busybox
+
+msg "Create busybox links file..."
+
+make CROSS_COMPILE="${STRAP_TARGET}-" ARCH="$STRAP_TARGET_KARCH" CONFIG_PREFIX="${STRAP_STAGE2_INSTALL_DIR}" busybox.links
+
+msg "Installing busybox..."
+
+install -D busybox "$STRAP_STAGE2_INSTALL_DIR"/usr/bin/busybox
+
+chmod 0755 "$STRAP_STAGE2_INSTALL_DIR"/usr/bin/busybox
+
+for cmd in `cat busybox.links|sed 's|^.*/||'`; do 
+  ln -svf busybox ${STRAP_STAGE2_INSTALL_DIR}/usr/bin/$cmd || true; 
+done

@@ -24,8 +24,8 @@ msg "Configuring make..."
 
 msg "Building make..."
 
-make -j${PNUM}
+make -j${STRAP_PJOBS}
 
 msg "Installing make..."
 
-make -j${PNUM} DESTDIR=${STRAP_STAGE2_INSTALL_DIR} install
+make -j${STRAP_PJOBS} DESTDIR=${STRAP_STAGE2_INSTALL_DIR} install
