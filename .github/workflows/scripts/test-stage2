@@ -5,7 +5,7 @@ source lib/functions.sh
 CWD=$(pwd)
 umask 022
 
-STRAP_STAGE2_DIR=$CWD/rootfs
+STRAP_ROOTFS=$CWD/rootfs
 
 msg "Testing proot execution..."
 
@@ -13,22 +13,22 @@ proot_run_cmd_tools $1 'ls -la; echo $PATH'
 
 msg "Injecting dummy.c..."
 
-echo 'int main(){}' > $STRAP_STAGE2_DIR/dummy.c
+echo 'int main(){}' > $STRAP_ROOTFS/dummy.c
 
 msg "Compiling dummy.c..."
 
-proot_run_cmd_tools $1 "gcc dummy.c -v -Wl,--verbose &> dummy.log"
+proot_run_cmd_tools $STRAP_ROOTFS $1 "gcc dummy.c -v -Wl,--verbose &> dummy.log"
 
 msg "Output log..."
 
-cat $STRAP_STAGE2_DIR/dummy.log
+cat $STRAP_ROOTFS/dummy.log
 
 msg "Checking failed..."
 
-cat $STRAP_STAGE2_DIR/dummy.log | grep failed
+cat $STRAP_ROOTFS/dummy.log | grep failed
 
 msg "Looking at sanity check..."
 
-readelf -l $STRAP_STAGE2_DIR/a.out
+readelf -l $STRAP_ROOTFS/a.out
 
 msg "Done with tests..."
