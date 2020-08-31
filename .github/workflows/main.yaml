@@ -36,18 +36,18 @@ jobs:
     - name: build stage2
       run: ./build-stage2
     ### Upload artifacts for stage1 ###
-    - name: change ownership and archive stage1 rootfs
+    - name: change ownership and archive stage1
       if: ${{ always() }}
-      run: sudo chown root:root -R ${GITHUB_WORKSPACE}/install/stage1 && sudo tar -cJf ${GITHUB_WORKSPACE}/stage-1-rootfs-$ACTION_TGT_ARCH.tar.xz -C ${GITHUB_WORKSPACE}/install/stage1 .
+      run: sudo chown root:root -R ${GITHUB_WORKSPACE}/install/stage1 && sudo tar -cJf ${GITHUB_WORKSPACE}/stage-1-toolchain-$ACTION_TGT_ARCH.tar.xz -C ${GITHUB_WORKSPACE}/install/stage1 .
     - name: prep stage1 for upload
-      run: cp ${GITHUB_WORKSPACE}/stage-1-rootfs-$ACTION_TGT_ARCH.tar.xz ${GITHUB_WORKSPACE}/stage-1-rootfs-$ACTION_TGT_ARCH-${{github.run_id}}.tar.xz
+      run: cp ${GITHUB_WORKSPACE}/stage-1-toolchain-$ACTION_TGT_ARCH.tar.xz ${GITHUB_WORKSPACE}/stage-1-toolchain-$ACTION_TGT_ARCH-${{github.run_id}}.tar.xz
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
       with:
-        name: stage-1-rootfs-${{matrix.target-arch}}-${{github.run_id}}
-        path: ${{github.workspace}}/stage-1-rootfs-${{matrix.target-arch}}.tar.xz
+        name: stage-1-toolchain-${{matrix.target-arch}}-${{github.run_id}}
+        path: ${{github.workspace}}/stage-1-toolchain-${{matrix.target-arch}}.tar.xz
     ### Upload artifacts for stage2 ###
-    - name: change ownership and archive stage2 rootfs
+    - name: change ownership and archive stage2
       if: ${{ always() }}
       run: sudo chown root:root -R ${GITHUB_WORKSPACE}/install/stage2 && sudo tar -cJf ${GITHUB_WORKSPACE}/stage-2-rootfs-$ACTION_TGT_ARCH.tar.xz -C ${GITHUB_WORKSPACE}/install/stage2 .
     - name: prep stage2 for upload
@@ -57,3 +57,28 @@ jobs:
       with:
         name: stage-2-rootfs-${{matrix.target-arch}}-${{github.run_id}}
         path: ${{github.workspace}}/stage-2-rootfs-${{matrix.target-arch}}.tar.xz
+  test:
+    name: Test stage2
+    runs-on: ubuntu-20.04
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        target-arch: [x86_64, aarch64]
+    env:
+      ACTION_TGT_ARCH: ${{matrix.target-arch}}
+      DEBIAN_FRONTEND: noninteractive
+    steps:
+      - uses: actions/checkout@v2
+      - name: install / update deps if not installed
+        run: sudo apt update -y && sudo apt install rsync wget curl proot qemu qemu-user-static elfutils -y && sudo apt autoremove -y
+      - name: download stage2 rootfs artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: stage-2-rootfs-${{matrix.target-arch}}-${{github.run_id}}
+      - name: extract stage2 rootfs
+        run: mkdir rootfs && tar -xf ${GITHUB_WORKSPACE}/stage-2-rootfs-$ACTION_TGT_ARCH.tar.xz -C rootfs
+      - name: move scripts to current directory.
+        run: cp -v ${GITHUB_WORKSPACE}/.github/workflows/scripts/* ${GITHUB_WORKSPACE}
+      - name: test stage2
+        run: sudo ./test-stage2 $ACTION_TGT_ARCH
