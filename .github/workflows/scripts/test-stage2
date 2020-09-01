@@ -5,7 +5,7 @@ source lib/functions.sh
 CWD=$(pwd)
 umask 022
 
-STRAP_ROOTFS=$CWD/rootfs
+export STRAP_ROOTFS=$CWD/rootfs
 
 msg "Testing proot execution..."
 
