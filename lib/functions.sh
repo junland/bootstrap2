@@ -132,29 +132,29 @@ proot_run_cmd_tools() {
     fi
   done
 
-  if [ ! -f "/usr/bin/qemu-$(echo "$1" | cut -d "-" -f1)-static" ]; then
-    msg "qemu static binary for $1 does not exist."
+  if [ ! -f "/usr/bin/qemu-$(echo "$ROOTFS_DIR_ARCH" | cut -d "-" -f1)-static" ]; then
+    msg "qemu static binary for $ROOTFS_DIR_ARCH does not exist."
     exit 1
   fi
 
   mount_chroot
 
-  msg "Executing '$CHROOT_CMD' command..."
+  msg "Executing '$ROOTFS_CMD' command..."
 
-  proot --cwd=/ -r "$STRAP_ROOTFS" -q qemu-"$ROOTFS_DIR_ARCH"-static /usr/bin/env -i \
+  proot --cwd=/ -r "$ROOTFS_DIR" -q qemu-"$ROOTFS_DIR_ARCH"-static /usr/bin/env -i \
         HOME=/ TERM="$TERM" \
         LC_ALL=POSIX \
         PS1='(chroot)$ ' \
         PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-        $ROOTFS_SHELL -c "$CHROOT_CMD ; echo $? > /.exit-code.out"
+        $ROOTFS_SHELL -c "$ROOTFS_CMD ; echo $? > /.exit-code.out"
 
   umount_chroot
 
-  SIG_NUM=$(cat $STRAP_ROOTFS/.exit-code.out)
+  SIG_NUM=$(cat $ROOTFS_DIR/.exit-code.out)
 
   msg "Here is the exit code..."
 
-  cat $STRAP_ROOTFS/.exit-code.out
+  cat $ROOTFS_DIR/.exit-code.out
 
   if [ $SIG_NUM != "0" ]; then
      msg "Something went wrong with executing proot_run_cmd_tools..."
