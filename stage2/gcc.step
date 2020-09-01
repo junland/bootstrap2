@@ -87,7 +87,7 @@ msg "Configuring gcc..."
 
 msg "Building gcc..."
 
-make -j${STRAP_PJOBS} AS_FOR_TARGET="$AS" LD_FOR_TARGET="$LD" all -C ${STRAP_BUILD_DIR}/gcc-build
+make -j${STRAP_PJOBS} AS_FOR_TARGET="$AS" LD_FOR_TARGET="$LD" -C ${STRAP_BUILD_DIR}/gcc-build
 
 msg "Installing gcc..."
 
