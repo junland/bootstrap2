@@ -6,10 +6,11 @@ CWD=$(pwd)
 umask 022
 
 export STRAP_ROOTFS=$CWD/rootfs
+export STRAP_ARCH=$1
 
 msg "Testing proot execution..."
 
-proot_run_cmd_tools $1 'ls -la; echo $PATH'
+proot_run_cmd_tools $STRAP_ROOTFS $STRAP_ARCH 'ls -la; echo $PATH'
 
 msg "Injecting dummy.c..."
 
