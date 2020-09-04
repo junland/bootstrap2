@@ -1,0 +1,18 @@
+#!/bin/bash -e
+
+source lib/functions.sh
+source lib/env.sh
+source targets/${ACTION_TGT_ARCH}.tgt
+
+CWD=$(pwd)
+umask 022
+
+create_mount_dirs "$STRAP_STAGE3_INSTALL_DIR"
+
+install_qemu_static "$STRAP_STAGE3_INSTALL_DIR"
+
+init_mount_dirs_stage3
+
+run_cmd_chroot_stage3 'ls -la' || msg_fail_stage3_term "Something went wrong with this..."
+
+term_mount_dirs_stage3

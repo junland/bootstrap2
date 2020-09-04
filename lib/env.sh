@@ -17,6 +17,7 @@ export STRAP_PATCHES_DIR="${STRAP_ROOT_DIR}/sources/patches"
 export STRAP_FILES_DIR="${STRAP_ROOT_DIR}/sources/files"
 export STRAP_STAGE1_INSTALL_DIR="${STRAP_INSTALL_DIR}/stage1"
 export STRAP_STAGE2_INSTALL_DIR="${STRAP_INSTALL_DIR}/stage2"
+export STRAP_STAGE3_INSTALL_DIR="${STRAP_INSTALL_DIR}/stage3"
 export STRAP_DEFAULT_PATH="/usr/bin:/bin:/sbin:/usr/sbin"
 
 export LANG="C"

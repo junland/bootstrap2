@@ -6,5 +6,6 @@ export STRAP_TARGET_GCCOPTS="--with-arch=x86-64 --with-tune=generic --enable-cet
 export STRAP_TARGET_BINUTILOPTS="--enable-targets=x86_64-pep"
 export STRAP_TARGET_LDFLAGS=""
 export STRAP_TARGET_KARCH="x86_64"
+export STRAP_QEMU_STATIC="qemu-x86_64-static"
 export CFLAGS="-D_FORTIFY_SOURCE=2 -g0 -Os -s -fexcess-precision=fast -fomit-frame-pointer -fno-asynchronous-unwind-tables -fdata-sections -ffunction-sections -fstack-protector-strong -fstack-clash-protection -Wl,-z,relro,-z,now -Wl,--as-needed -Wl,--gc-sections -pipe -fcf-protection=full"
 export CXXFLAGS="$CFLAGS"

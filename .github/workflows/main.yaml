@@ -80,5 +80,5 @@ jobs:
         run: mkdir rootfs && tar -xf ${GITHUB_WORKSPACE}/stage-2-rootfs-$ACTION_TGT_ARCH.tar.xz -C rootfs
       - name: move scripts to current directory.
         run: cp -v ${GITHUB_WORKSPACE}/.github/workflows/scripts/* ${GITHUB_WORKSPACE}
-      - name: test stage2
-        run: sudo ./test-stage2 $ACTION_TGT_ARCH
+      - name: test for stage3
+        run: sudo ./test-stage3

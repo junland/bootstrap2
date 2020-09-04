@@ -11,6 +11,12 @@ msg_fail() {
   exit 1
 }
 
+msg_fail_stage3_term() {
+  term_mount_dirs_stage3
+  echo -e "\e[31m >>> $1 \e[0m"
+  exit 1
+}
+
 check_target() {
     [ -f "${STRAP_TARGETS_DIR}/${STRAP_SELECTED_TARGET}.tgt" ] || msg_fail "Failed to find target file for ${STRAP_SELECTED_TARGET}"
 }
@@ -88,7 +94,7 @@ export -f clean_build_dir
 export -f extract_source_pkg
 export -f setup_dirs_stage1
 export -f setup_dirs_stage2
-
+export -f msg_fail_stage3_term
 
 mount_chroot() {
   msg "Creating file system directories..."
@@ -167,3 +173,89 @@ proot_run_cmd_tools() {
 export -f mount_chroot
 export -f umount_chroot
 export -f proot_run_cmd_tools
+
+create_mount_dirs() {
+  [ ! -z "${1}" ] || msg_fail "create_mount_dirs: Target directory not set."
+
+  msg "Creating mount directories..."
+  install -D -d -m 00755 "${1}/dev/pts" || msg_fail "create_mount_dirs: Failed to create ${1}/dev/pts"
+  install -D -d -m 00755 "${1}/proc" || msg_fail "create_mount_dirs: Failed to create ${1}/proc"
+  install -D -d -m 00755 "${1}/sys" || msg_fail "create_mount_dirs: Failed to create ${1}/sys"
+}
+
+init_mount_dirs_stage2() {
+  [ ! -z "${STRAP_STAGE2_INSTALL_DIR}" ] || msg_fail "init_mount_dirs_stage2: Stage 2 directory not set."
+  
+  msg "Initializing directories for stage2 for chroot..."
+  mount -v --bind /dev/pts "${STRAP_STAGE2_INSTALL_DIR}/dev/pts" || msg_fail "init_mount_dirs_stage2: Failed to bind-mount /dev/pts"
+  mount -v --bind /sys "${STRAP_STAGE2_INSTALL_DIR}/sys" || msg_fail "init_mount_dirs_stage2: Failed to bind-mount /sys"
+  mount -v --bind /proc "${STRAP_STAGE2_INSTALL_DIR}/proc" || msg_fail "init_mount_dirs_stage2: Failed to bind-mount /proc"
+}
+
+init_mount_dirs_stage3() {
+  [ ! -z "${STRAP_STAGE2_INSTALL_DIR}" ] || msg_fail "init_mount_dirs_stage3: Stage 2 directory not set."
+  [ ! -z "${STRAP_STAGE3_INSTALL_DIR}" ] || msg_fail "init_mount_dirs_stage3: Stage 3 directory not set."
+  [ ! -z "${STRAP_BUILD_DIR}" ] || msg_fail "init_mount_dirs_stage3: Build directory not set."
+  
+  msg "Initializing directories for stage3 for chroot..."
+  mount -v --bind /dev/pts "${STRAP_STAGE3_INSTALL_DIR}/dev/pts" || msg_fail "init_mount_dirs_stage3: Failed to bind-mount /dev/pts"
+  mount -v --bind /sys "${STRAP_STAGE3_INSTALL_DIR}/sys" || msg_fail "init_mount_dirs_stage3: Failed to bind-mount /sys"
+  mount -v --bind /proc "${STRAP_STAGE3_INSTALL_DIR}/proc" || msg_fail "init_mount_dirs_stage3: Failed to bind-mount /proc"
+
+  install -D -d -m 00755 "${STRAP_STAGE3_INSTALL_DIR}/stage2" || msg_fail "init_mount_dirs_stage3: Failed to create ${STRAP_STAGE3_INSTALL_DIR}/stage2"
+  install -D -d -m 00755 "${STRAP_STAGE3_INSTALL_DIR}/build" || msg_fail "init_mount_dirs_stage3: Failed to create ${STRAP_STAGE3_INSTALL_DIR}/build"
+  
+  mount -v --bind -o ro "${STRAP_STAGE2_INSTALL_DIR}" "${STRAP_STAGE3_INSTALL_DIR}/stage2" || msg_fail "init_mount_dirs_stage3: Failed to bind-mount /stage2"
+  mount -v -o remount,ro,bind "${STRAP_STAGE3_INSTALL_DIR}/stage2" || msg_fail "init_mount_dirs_stage3: Failed to make /stage2 read-only"
+  mount -v --bind "${STRAP_BUILD_DIR}" "${STRAP_STAGE3_INSTALL_DIR}/build" || msg_fail "init_mount_dirs_stage3: Failed to bind-mount /build"
+}
+
+install_qemu_static() {
+  [ ! -z "${1}" ] || msg_fail "install_qemu_static: Target directory not set."
+  [ ! -z "${STRAP_QEMU_STATIC}" ] || msg_fail "install_qemu_static: QEMU static binary not set."
+
+  msg "Installing qemu-user-static..."
+  install -D -m 00755 $(which ${STRAP_QEMU_STATIC}) "${1}/usr/bin/${STRAP_QEMU_STATIC}" || msg_fail "install_qemu_static: Failed to install qemu-user-static"
+}
+
+run_cmd_chroot_stage3() {
+  [ ! -z "${1}" ] || msg_fail "run_cmd_chroot_stage3: No command has been set to execute."
+
+  for shell in "sh" "ash" "bash" "dash"; do
+    msg "Searching for shell: $shell"
+    if [ -f "$STRAP_STAGE2_INSTALL_DIR"/bin/$shell ] || [ -L "$STRAP_STAGE2_INSTALL_DIR"/bin/$shell ]; then
+      msg "Selected $shell as shell..."
+      export CHROOT_SHELL=/usr/bin/$shell
+      break
+    fi
+  done
+
+  CHROOT_PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
+  LD_LIBRARY_PATH="/stage2/usr/lib" PATH="${CHROOT_PATH}:/stage2/usr/bin" chroot "${STRAP_STAGE3_INSTALL_DIR}" ${CHROOT_SHELL} -c "cd \; ${1}"
+}
+
+term_mount_dirs_stage3() {
+  [ ! -z "${STRAP_STAGE3_INSTALL_DIR}" ] || msg_fail "term_mount_dirs_stage3: Stage 3 directory not set."
+  
+  for target in "build" "stage2" "dev/pts" "sys" "proc"; do
+    msg "Attempting to unmount ${target}"
+    umount "${STRAP_STAGE3_INSTALL_DIR}/${target}"
+    if [[ "$?" != 0 ]]; then
+      sleep 1
+      msg "Attempting to unmount ${target} again"
+      umount "${STRAP_STAGE3_INSTALL_DIR}/${target}"
+    fi
+    if [[ "$?" != "0" ]]; then
+        msg "Lazy-unmounting ${target}"
+        umount -l "${STRAP_STAGE3_INSTALL_DIR}/${target}" || :
+    fi
+  done
+}
+
+export -f create_mount_dirs
+export -f init_mount_dirs_stage2
+export -f init_mount_dirs_stage3
+export -f install_qemu_static
+export -f run_cmd_chroot_stage3
+export -f term_mount_dirs_stage3
