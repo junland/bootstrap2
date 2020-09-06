@@ -67,6 +67,7 @@ jobs:
         target-arch: [x86_64, aarch64]
     env:
       ACTION_TGT_ARCH: ${{matrix.target-arch}}
+      STRAP_SELECTED_TARGET: ${{matrix.target-arch}}
       DEBIAN_FRONTEND: noninteractive
     steps:
       - uses: actions/checkout@v2
