@@ -2,7 +2,7 @@
 
 source lib/functions.sh
 source lib/env.sh
-source targets/${ACTION_TGT_ARCH}.tgt
+source targets/${STRAP_SELECTED_TARGET}.tgt
 
 CWD=$(pwd)
 umask 022
