@@ -225,14 +225,14 @@ run_cmd_chroot_stage3() {
     msg "Searching for shell: $shell"
     if [ -f "$STRAP_STAGE2_INSTALL_DIR"/bin/$shell ] || [ -L "$STRAP_STAGE2_INSTALL_DIR"/bin/$shell ]; then
       msg "Selected $shell as shell..."
-      export CHROOT_SHELL=/usr/bin/$shell
+      export CHROOT_SHELL=/stage2/usr/bin/$shell
       break
     fi
   done
 
   CHROOT_PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
-  LD_LIBRARY_PATH="/stage2/usr/lib" PATH="${CHROOT_PATH}:/stage2/usr/bin" chroot "${STRAP_STAGE3_INSTALL_DIR}" ${CHROOT_SHELL} -c "cd \; ${1}"
+  LD_LIBRARY_PATH="/stage2/usr/lib" PATH="${CHROOT_PATH}:/stage2/usr/bin" chroot "${STRAP_STAGE3_INSTALL_DIR}" ${CHROOT_SHELL} -c "cd /; ${1}"
 }
 
 term_mount_dirs_stage3() {
