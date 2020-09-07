@@ -96,84 +96,6 @@ export -f setup_dirs_stage1
 export -f setup_dirs_stage2
 export -f msg_fail_stage3_term
 
-mount_chroot() {
-  msg "Creating file system directories..."
-  
-  mkdir -pv "$STRAP_ROOTFS"/{dev,proc,sys,run}
-
-  msg "Mounting chroot..."
-  
-  mount -v --bind /dev "$STRAP_ROOTFS"/dev
-  mount -vt devpts devpts "$STRAP_ROOTFS"/dev/pts -o gid=5,mode=620
-  mount -vt proc proc "$STRAP_ROOTFS"/proc
-  mount -vt sysfs sysfs "$STRAP_ROOTFS"/sys
-  mount -vt tmpfs tmpfs "$STRAP_ROOTFS"/run
-
-  msg "Done mounting chroot."
-}
-
-umount_chroot() {
-  msg "Unmounting chroot..."
-
-  umount -v "$STRAP_ROOTFS"/dev/pts
-  umount -v "$STRAP_ROOTFS"/dev
-  umount -v "$STRAP_ROOTFS"/run
-  umount -v "$STRAP_ROOTFS"/proc
-  umount -v "$STRAP_ROOTFS"/sys
-
-  msg "Done unmounting chroot."
-}
-
-proot_run_cmd_tools() {
-  ROOTFS_DIR=$1
-  ROOTFS_DIR_ARCH=$(echo "$2" | cut -d "-" -f1)
-  ROOTFS_CMD=$3
-  
-  for shell in "sh" "ash" "bash"; do
-    msg "Searching for shell: $shell"
-    if [ -f "$STRAP_ROOTFS"/bin/$shell ] || [ -L "$STRAP_ROOTFS"/bin/$shell ]; then
-      msg "Selected $shell as rootfs shell..."
-      export ROOTFS_SHELL=/bin/$shell
-      break
-    fi
-  done
-
-  if [ ! -f "/usr/bin/qemu-$(echo "$ROOTFS_DIR_ARCH" | cut -d "-" -f1)-static" ]; then
-    msg "qemu static binary for $ROOTFS_DIR_ARCH does not exist."
-    exit 1
-  fi
-
-  mount_chroot
-
-  msg "Executing '$ROOTFS_CMD' command..."
-
-  proot --cwd=/ -r "$ROOTFS_DIR" -q qemu-"$ROOTFS_DIR_ARCH"-static /usr/bin/env -i \
-        HOME=/ TERM="$TERM" \
-        LC_ALL=POSIX \
-        PS1='(chroot)$ ' \
-        PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-        $ROOTFS_SHELL -c "$ROOTFS_CMD ; echo $? > /.exit-code.out"
-
-  umount_chroot
-
-  SIG_NUM=$(cat $ROOTFS_DIR/.exit-code.out)
-
-  msg "Here is the exit code..."
-
-  cat $ROOTFS_DIR/.exit-code.out
-
-  if [ $SIG_NUM != "0" ]; then
-     msg "Something went wrong with executing proot_run_cmd_tools..."
-     exit "$SIG_NUM"
-  fi
-
-  return
-}
-
-export -f mount_chroot
-export -f umount_chroot
-export -f proot_run_cmd_tools
-
 create_mount_dirs() {
   [ ! -z "${1}" ] || msg_fail "create_mount_dirs: Target directory not set."
 
@@ -224,7 +146,7 @@ run_cmd_chroot_stage3() {
   for shell in "sh" "ash" "bash" "dash"; do
     msg "Searching for shell: $shell"
     if [ -f "$STRAP_STAGE2_INSTALL_DIR"/bin/$shell ] || [ -L "$STRAP_STAGE2_INSTALL_DIR"/bin/$shell ]; then
-      msg "Selected $shell as shell..."
+      msg "Selected $shell as the selected shell..."
       export CHROOT_SHELL=/stage2/usr/bin/$shell
       break
     fi
