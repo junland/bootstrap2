@@ -77,8 +77,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: stage-2-rootfs-${{matrix.target-arch}}-${{github.run_id}}
+      - name: make install dir
+        run: mkdir -p install/stage2 && mkdir -p install/stage3
       - name: extract stage2 rootfs
-        run: mkdir rootfs && tar -xf ${GITHUB_WORKSPACE}/stage-2-rootfs-$ACTION_TGT_ARCH.tar.xz -C rootfs
+        run: mkdir rootfs && tar -xf ${GITHUB_WORKSPACE}/stage-2-rootfs-$ACTION_TGT_ARCH.tar.xz -C install/stage2
       - name: move scripts to current directory.
         run: cp -v ${GITHUB_WORKSPACE}/.github/workflows/scripts/* ${GITHUB_WORKSPACE}
       - name: test for stage3
