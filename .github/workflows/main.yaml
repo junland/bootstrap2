@@ -35,6 +35,8 @@ jobs:
       run: ./build-stage1
     - name: build stage2
       run: ./build-stage2
+    - name: build stage3
+      run: sudo ./build-stage3
     ### Upload artifacts for stage1 ###
     - name: change ownership and archive stage1
       if: ${{ always() }}
@@ -57,6 +59,17 @@ jobs:
       with:
         name: stage-2-rootfs-${{matrix.target-arch}}-${{github.run_id}}
         path: ${{github.workspace}}/stage-2-rootfs-${{matrix.target-arch}}.tar.xz
+    ### Upload artifacts for stage3 ###
+    - name: change ownership and archive stage3
+      if: ${{ always() }}
+      run: sudo chown root:root -R ${GITHUB_WORKSPACE}/install/stage3 && sudo tar -cJf ${GITHUB_WORKSPACE}/stage-3-rootfs-$ACTION_TGT_ARCH.tar.xz -C ${GITHUB_WORKSPACE}/install/stage3 .
+    - name: prep stage3 for upload
+      run: cp ${GITHUB_WORKSPACE}/stage-3-rootfs-$ACTION_TGT_ARCH.tar.xz ${GITHUB_WORKSPACE}/stage-3-rootfs-$ACTION_TGT_ARCH-${{github.run_id}}.tar.xz
+    - uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: stage-3-rootfs-${{matrix.target-arch}}-${{github.run_id}}
+        path: ${{github.workspace}}/stage-3-rootfs-${{matrix.target-arch}}.tar.xz
   test:
     name: Test stage2
     runs-on: ubuntu-20.04

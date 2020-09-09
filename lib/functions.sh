@@ -69,6 +69,19 @@ setup_dirs_stage2() {
     chmod +x -R ${STRAP_ROOT_DIR}/stage2/*.step
 }
 
+setup_dirs_stage3() {
+    [ ! -z "${STRAP_STAGE3_INSTALL_DIR}" ] || msg_fail "setup_dirs_stage3: stage3 install directory not set."
+    [ ! -z "${STRAP_BUILD_DIR}" ] || msg_fail "setup_dirs_stage3: Build directory not set."
+    [ ! -z "${STRAP_ROOT_DIR}" ] || msg_fail "setup_dirs_stage3: Root directory not set."
+
+    msg "Setting up directory structure for stage3..."
+    mkdir -p $STRAP_STAGE3_INSTALL_DIR
+    mkdir -p $STRAP_BUILD_DIR
+
+    msg "Setting stage3 step permissions..."
+    chmod +x -R ${STRAP_ROOT_DIR}/stage3/*.step
+}
+
 clean_build_dir() {
     [ ! -z "${STRAP_BUILD_DIR}" ] || msg_fail "clean_build_dir: Build directory not set."
 

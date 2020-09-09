@@ -1,0 +1,44 @@
+#!/bin/true
+
+set -e
+
+. lib/env.sh
+. lib/functions.sh
+. targets/${STRAP_SELECTED_TARGET}.tgt
+
+msg "Configuring root filesystem layout..."
+	
+install -v -D -d -m 00755 "${STRAP_STAGE3_INSTALL_DIR}"/usr/{bin,lib,share,sbin,include}
+install -v -D -d -m 00755 "${STRAP_STAGE3_INSTALL_DIR}"/{etc,proc,run,var,sys,dev,tmp}
+
+install -v -D -d -m 00755 "${STRAP_STAGE3_INSTALL_DIR}/run/lock"
+ln -sv ../run/lock "${STRAP_STAGE3_INSTALL_DIR}/var/lock"
+
+ln -sv lib "${STRAP_STAGE3_INSTALL_DIR}/usr/lib64"
+ln -sv usr/bin "${STRAP_STAGE3_INSTALL_DIR}/bin"
+ln -sv usr/sbin "${STRAP_STAGE3_INSTALL_DIR}/sbin"
+ln -sv usr/lib "${STRAP_STAGE3_INSTALL_DIR}/lib"
+ln -sv usr/lib64 "${STRAP_STAGE3_INSTALL_DIR}/lib64"
+
+msg "Constructing device nodes"
+	
+# TTY support
+mknod -m 622 "${STRAP_STAGE3_INSTALL_DIR}"/dev/console c 5 1
+mknod -m 666 "${STRAP_STAGE3_INSTALL_DIR}"/dev/ptmx c 5 2
+mknod -m 666 "${STRAP_STAGE3_INSTALL_DIR}"/dev/tty c 5 0
+chown -v root:tty "${STRAP_STAGE3_INSTALL_DIR}"/dev/{console,ptmx,tty}
+
+# Runtime support for random/null/zero
+mknod -m 666 "${STRAP_STAGE3_INSTALL_DIR}"/dev/null c 1 3
+mknod -m 666 "${STRAP_STAGE3_INSTALL_DIR}"/dev/zero c 1 5
+mknod -m 444 "${STRAP_STAGE3_INSTALL_DIR}"/dev/random c 1 8
+mknod -m 444 "${STRAP_STAGE3_INSTALL_DIR}"/dev/urandom c 1 9
+
+msg "Creating runtime device links"
+
+# Runtime support
+ln -svf /proc/self/fd "${STRAP_STAGE3_INSTALL_DIR}"/dev/fd
+ln -svf /proc/self/fd/0 "${STRAP_STAGE3_INSTALL_DIR}"/dev/stdin
+ln -svf /proc/self/fd/1 "${STRAP_STAGE3_INSTALL_DIR}"/dev/stdout
+ln -svf /proc/self/fd/2 "${STRAP_STAGE3_INSTALL_DIR}"/dev/stderr
+ln -svf /proc/kcore "${STRAP_STAGE3_INSTALL_DIR}"/dev/core
