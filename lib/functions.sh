@@ -150,7 +150,8 @@ install_qemu_static() {
   [ ! -z "${STRAP_QEMU_STATIC}" ] || msg_fail "install_qemu_static: QEMU static binary not set."
 
   msg "Installing qemu-user-static..."
-  install -D -m 00755 $(which ${STRAP_QEMU_STATIC}) "${1}/usr/bin/${STRAP_QEMU_STATIC}" || msg_fail "install_qemu_static: Failed to install qemu-user-static"
+  mkdir -p "${1}/usr/bin/"
+  install -v -D -m 00755 $(which ${STRAP_QEMU_STATIC}) "${1}/usr/bin/${STRAP_QEMU_STATIC}" || msg_fail "install_qemu_static: Failed to install qemu-user-static"
 }
 
 run_cmd_chroot_stage3() {
