@@ -21,7 +21,7 @@ init_mount_dirs_stage3
 for step in ${STEPS[@]} ; do
     clean_build_dir
     msg "Building $step for stage3 targeting $STRAP_SELECTED_TARGET"
-    env -S -i STRAP_SELECTED_TARGET="${STRAP_SELECTED_TARGET}" bash --norc --noprofile "stage2/${step}.step" || msg_fail_stage3_term "Building ${step} failed for stage3"
+    env -S -i STRAP_SELECTED_TARGET="${STRAP_SELECTED_TARGET}" bash --norc --noprofile "stage3/${step}.step" || msg_fail_stage3_term "Building ${step} failed for stage3"
 done
 
 term_mount_dirs_stage3
