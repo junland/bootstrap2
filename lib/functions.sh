@@ -149,8 +149,6 @@ install_qemu_static() {
   [ ! -z "${1}" ] || msg_fail "install_qemu_static: Target directory not set."
   [ ! -z "${STRAP_QEMU_STATIC}" ] || msg_fail "install_qemu_static: QEMU static binary not set."
   
-  set -x
-  
   msg "Installing qemu-user-static..."
   
   install -D -m 00755 $(which ${STRAP_QEMU_STATIC}) "${1}/usr/bin/${STRAP_QEMU_STATIC}" || msg_fail "install_qemu_static: Failed to install qemu-user-static"
