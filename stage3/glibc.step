@@ -38,7 +38,7 @@ echo "rtlddir=/usr/lib" >> $STRAP_BUILD_DIR/glibc-build/configparms
     --target=$STRAP_TARGET \
     --build=$STRAP_HOST \
     --host=$STRAP_TARGET \
-    --with-headers=${STRAP_STAGE1_INSTALL_DIR}/sysroot/usr/include \
+    --with-headers=${STRAP_STAGE3_INSTALL_DIR}/usr/include \
     --libdir=/usr/lib \
     --libexecdir=/usr/lib \
     --enable-shared \
