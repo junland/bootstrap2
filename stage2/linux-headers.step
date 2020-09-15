@@ -24,4 +24,4 @@ rm usr/include/Makefile
 
 mkdir -p ${STRAP_STAGE2_INSTALL_DIR}/usr/include
 
-cp -rv dest/include/* ${STRAP_STAGE1_INSTALL_DIR}/usr/include
+cp -rv dest/include/* ${STRAP_STAGE2_INSTALL_DIR}/usr/include
