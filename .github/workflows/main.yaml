@@ -7,7 +7,7 @@ on:
 
 jobs:  
   build:
-    name: Build stage1 & stage2
+    name: Build stage1, stage2, & stage3
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -36,7 +36,7 @@ jobs:
     - name: build stage2
       run: ./build-stage2
     - name: build stage3
-      run: sudo ./build-stage3
+      run: sudo STRAP_SELECTED_TARGET=${STRAP_SELECTED_TARGET} ./build-stage3
     ### Upload artifacts for stage1 ###
     - name: change ownership and archive stage1
       if: ${{ always() }}
