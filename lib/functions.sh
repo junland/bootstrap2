@@ -88,6 +88,11 @@ clean_build_dir() {
     msg "Cleaning previous build directory..."
     rm -rf $STRAP_BUILD_DIR
     mkdir -p $STRAP_BUILD_DIR
+
+    if [ -f "${STRAP_STAGE3_INSTALL_DIR}/build" ]; then
+      msg "Also cleaning up stage3 build directory..."
+      rm -rf "${STRAP_STAGE3_INSTALL_DIR}/build"
+    fi
 }
 
 extract_source_pkg() {
@@ -112,13 +117,17 @@ export -f setup_dirs_stage1
 export -f setup_dirs_stage2
 export -f msg_fail_stage3_term
 
-create_mount_dirs() {
-  [ ! -z "${1}" ] || msg_fail "create_mount_dirs: Target directory not set."
+create_dirs_stage3() {
+  [ ! -z "${1}" ] || msg_fail "create_dirs_stage3: Target directory not set."
 
-  msg "Creating mount directories..."
-  install -D -d -m 755 "${1}/dev/pts" || msg_fail "create_mount_dirs: Failed to create ${1}/dev/pts"
-  install -D -d -m 755 "${1}/proc" || msg_fail "create_mount_dirs: Failed to create ${1}/proc"
-  install -D -d -m 755 "${1}/sys" || msg_fail "create_mount_dirs: Failed to create ${1}/sys"
+  msg "Creating stage3 default directories..."
+  install -D -d -m 00755 "${1}/build" || msg_fail "create_dirs_stage3: Failed to create ${1}/build"
+
+  msg "Creating stage3 mount directories..."
+  install -D -d -m 00755 "${1}/dev/pts" || msg_fail "create_dirs_stage3: Failed to create ${1}/dev/pts"
+  install -D -d -m 00755 "${1}/proc" || msg_fail "create_dirs_stage3: Failed to create ${1}/proc"
+  install -D -d -m 00755 "${1}/sys" || msg_fail "create_dirs_stage3: Failed to create ${1}/sys"
+  install -D -d -m 00755 "${1}/stage2" || msg_fail "create_dirs_stage3: Failed to create ${1}/stage2"
 }
 
 init_mount_dirs_stage2() {
@@ -139,13 +148,9 @@ init_mount_dirs_stage3() {
   mount -v --bind /dev/pts "${STRAP_STAGE3_INSTALL_DIR}/dev/pts" || msg_fail "init_mount_dirs_stage3: Failed to bind-mount /dev/pts"
   mount -v --bind /sys "${STRAP_STAGE3_INSTALL_DIR}/sys" || msg_fail "init_mount_dirs_stage3: Failed to bind-mount /sys"
   mount -v --bind /proc "${STRAP_STAGE3_INSTALL_DIR}/proc" || msg_fail "init_mount_dirs_stage3: Failed to bind-mount /proc"
-
-  install -D -d -m 755 "${STRAP_STAGE3_INSTALL_DIR}/stage2" || msg_fail "init_mount_dirs_stage3: Failed to create ${STRAP_STAGE3_INSTALL_DIR}/stage2"
-  install -D -d -m 775 "${STRAP_STAGE3_INSTALL_DIR}/build" || msg_fail "init_mount_dirs_stage3: Failed to create ${STRAP_STAGE3_INSTALL_DIR}/build"
   
   mount -v --bind -o ro "${STRAP_STAGE2_INSTALL_DIR}" "${STRAP_STAGE3_INSTALL_DIR}/stage2" || msg_fail "init_mount_dirs_stage3: Failed to bind-mount /stage2"
   mount -v -o remount,ro,bind "${STRAP_STAGE3_INSTALL_DIR}/stage2" || msg_fail "init_mount_dirs_stage3: Failed to make /stage2 read-only"
-  mount -v --rbind "${STRAP_BUILD_DIR}" "${STRAP_STAGE3_INSTALL_DIR}/build" || msg_fail "init_mount_dirs_stage3: Failed to bind-mount /build"
 }
 
 install_qemu_static() {
@@ -194,9 +199,19 @@ term_mount_dirs_stage3() {
   done
 }
 
-export -f create_mount_dirs
+copy_local_build_stage3() {
+  [ ! -z "${STRAP_BUILD_DIR}" ] || msg_fail "copy_local_build_stage3: Build directory not set."
+  [ ! -z "${STRAP_STAGE3_INSTALL_DIR}" ] || msg_fail "copy_local_build_stage3: Stage 3 directory not set."
+  [ ! -f "${STRAP_STAGE3_INSTALL_DIR}/build" ] || msg_fail "copy_local_build_stage3: Stage 3 build directory does not exist."
+
+  msg "Copying local build directory contents to stage3 build directory..."
+  cp ${STRAP_BUILD_DIR}/* ${STRAP_STAGE3_INSTALL_DIR}/build
+}
+
+export -f create_dirs_stage3
 export -f init_mount_dirs_stage2
 export -f init_mount_dirs_stage3
 export -f install_qemu_static
 export -f run_cmd_chroot_stage3
 export -f term_mount_dirs_stage3
+export -f copy_local_build_stage3

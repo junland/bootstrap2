@@ -8,7 +8,7 @@ set -e
 
 [ "${EUID}" -eq "0" ] || msg_fail "build-stage3: Must be run via sudo"
 
-check_target && download_sources && setup_dirs_stage3
+check_target && download_sources && create_dirs_stage3
 
 STEPS=(root linux-headers glibc binutils)
 

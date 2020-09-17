@@ -16,6 +16,8 @@ mkdir -p binutils-build && cd binutils-build
 
 export CHROOT_CD=/build/binutils/binutils-build
 
+copy_local_build_stage3
+
 msg "Configuring binutils..."
 
 run_cmd_chroot_stage3 "../configure $STRAP_TARGET_BINUTILOPTS \
