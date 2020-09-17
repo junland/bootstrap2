@@ -99,7 +99,7 @@ extract_source_pkg() {
     tar -xf "$STRAP_SOURCES_DIR"/$1-* -C $STRAP_BUILD_DIR
     
     msg "Linking for easy access..."
-    ln -sv $1-* $STRAP_BUILD_DIR/binutils
+    ln -sv $1-* $STRAP_BUILD_DIR/$1
 }
 
 export -f msg
