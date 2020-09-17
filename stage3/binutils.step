@@ -10,11 +10,11 @@ cd ${STRAP_BUILD_DIR}
 
 extract_source_pkg binutils
 
-cd ${STRAP_BUILD_DIR}/binutils-*
+cd ${STRAP_BUILD_DIR}/binutils
 
 mkdir -p binutils-build && cd binutils-build
 
-export CHROOT_CD=/build/binutils-*/binutils-build
+export CHROOT_CD=/build/binutils/binutils-build
 
 msg "Configuring binutils..."
 
