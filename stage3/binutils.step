@@ -1,0 +1,47 @@
+#!/bin/true
+
+set -e
+
+. lib/env.sh
+. lib/functions.sh
+. targets/${STRAP_SELECTED_TARGET}.tgt
+
+cd ${STRAP_BUILD_DIR}
+
+extract_source_pkg binutils
+
+cd ${STRAP_BUILD_DIR}/binutils-*
+
+mkdir -p binutils-build && cd binutils-build
+
+export CHROOT_CD=/build/binutils-*/binutils-build
+
+msg "Configuring binutils..."
+
+run_cmd_chroot_stage3 "../configure $STRAP_TARGET_BINUTILOPTS \
+                                                --prefix=/usr \
+                                                --with-pic \
+                                                --enable-default-hash-style=gnu \
+                                                --enable-64-bit-bfd \
+                                                --enable-deterministic-archives \
+                                                --enable-gold \
+                                                --enable-ld=default \
+                                                --enable-lto \
+                                                --enable-plugins \
+                                                --enable-relro \
+                                                --enable-threads \
+                                                --disable-nls \
+                                                --disable-werror \
+                                                --disable-multilib"
+
+msg "Configuring host for binutils..."
+
+run_cmd_chroot_stage3 "make MAKEINFO=true configure-host"
+
+msg "Building binutils..."
+
+run_cmd_chroot_stage3 "make -j${STRAP_PJOBS} MAKEINFO=true all"
+
+msg "Install binutils..."
+
+run_cmd_chroot_stage3 "make -j${STRAP_PJOBS} MAKEINFO="true" tooldir=/usr install"

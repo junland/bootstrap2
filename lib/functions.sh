@@ -168,7 +168,9 @@ run_cmd_chroot_stage3() {
 
   CHROOT_PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
-  LD_LIBRARY_PATH="/stage2/usr/lib" PATH="${CHROOT_PATH}:/stage2/usr/bin" chroot "${STRAP_STAGE3_INSTALL_DIR}" ${CHROOT_SHELL} -c "cd /; ${1}"
+  CHROOT_CD=${CHROOT_CD:-"/"}
+
+  LD_LIBRARY_PATH="/stage2/usr/lib" PATH="${CHROOT_PATH}:/stage2/usr/bin" chroot "${STRAP_STAGE3_INSTALL_DIR}" ${CHROOT_SHELL} -c "cd ${CHROOT_CD}; ${1}"
 }
 
 term_mount_dirs_stage3() {
