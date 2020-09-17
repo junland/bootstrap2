@@ -145,7 +145,7 @@ init_mount_dirs_stage3() {
   
   mount -v --bind -o ro "${STRAP_STAGE2_INSTALL_DIR}" "${STRAP_STAGE3_INSTALL_DIR}/stage2" || msg_fail "init_mount_dirs_stage3: Failed to bind-mount /stage2"
   mount -v -o remount,ro,bind "${STRAP_STAGE3_INSTALL_DIR}/stage2" || msg_fail "init_mount_dirs_stage3: Failed to make /stage2 read-only"
-  mount -v --bind "${STRAP_BUILD_DIR}" "${STRAP_STAGE3_INSTALL_DIR}/build" || msg_fail "init_mount_dirs_stage3: Failed to bind-mount /build"
+  mount -v --rbind "${STRAP_BUILD_DIR}" "${STRAP_STAGE3_INSTALL_DIR}/build" || msg_fail "init_mount_dirs_stage3: Failed to bind-mount /build"
 }
 
 install_qemu_static() {
