@@ -184,7 +184,7 @@ run_cmd_chroot_stage3() {
 term_mount_dirs_stage3() {
   [ ! -z "${STRAP_STAGE3_INSTALL_DIR}" ] || msg_fail "term_mount_dirs_stage3: Stage 3 directory not set."
   
-  for target in "build" "stage2" "dev/pts" "sys" "proc"; do
+  for target in "stage2" "dev/pts" "sys" "proc"; do
     msg "Attempting to unmount ${target}"
     umount "${STRAP_STAGE3_INSTALL_DIR}/${target}"
     if [[ "$?" != 0 ]]; then
