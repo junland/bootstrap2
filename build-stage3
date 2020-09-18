@@ -12,7 +12,7 @@ check_target && download_sources && setup_dirs_stage3
 
 STEPS=(root linux-headers glibc binutils)
 
-create_dirs_stage3 "$STRAP_STAGE3_INSTALL_DIR"
+setup_chroot_dirs_stage3 "$STRAP_STAGE3_INSTALL_DIR"
 
 install_qemu_static "$STRAP_STAGE3_INSTALL_DIR"
 

@@ -117,17 +117,17 @@ export -f setup_dirs_stage1
 export -f setup_dirs_stage2
 export -f msg_fail_stage3_term
 
-create_dirs_stage3() {
-  [ ! -z "${1}" ] || msg_fail "create_dirs_stage3: Target directory not set."
+setup_chroot_dirs_stage3() {
+  [ ! -z "${1}" ] || msg_fail "setup_chroot_dirs_stage3: Target directory not set."
 
   msg "Creating stage3 default directories..."
-  install -D -d -m 00755 "${1}/build" || msg_fail "create_dirs_stage3: Failed to create ${1}/build"
+  install -D -d -m 00755 "${1}/build" || msg_fail "setup_chroot_dirs_stage3: Failed to create ${1}/build"
 
   msg "Creating stage3 mount directories..."
-  install -D -d -m 00755 "${1}/dev/pts" || msg_fail "create_dirs_stage3: Failed to create ${1}/dev/pts"
-  install -D -d -m 00755 "${1}/proc" || msg_fail "create_dirs_stage3: Failed to create ${1}/proc"
-  install -D -d -m 00755 "${1}/sys" || msg_fail "create_dirs_stage3: Failed to create ${1}/sys"
-  install -D -d -m 00755 "${1}/stage2" || msg_fail "create_dirs_stage3: Failed to create ${1}/stage2"
+  install -D -d -m 00755 "${1}/dev/pts" || msg_fail "setup_chroot_dirs_stage3: Failed to create ${1}/dev/pts"
+  install -D -d -m 00755 "${1}/proc" || msg_fail "setup_chroot_dirs_stage3: Failed to create ${1}/proc"
+  install -D -d -m 00755 "${1}/sys" || msg_fail "setup_chroot_dirs_stage3: Failed to create ${1}/sys"
+  install -D -d -m 00755 "${1}/stage2" || msg_fail "setup_chroot_dirs_stage3: Failed to create ${1}/stage2"
 }
 
 init_mount_dirs_stage2() {
@@ -208,7 +208,7 @@ copy_local_build_stage3() {
   cp ${STRAP_BUILD_DIR}/* ${STRAP_STAGE3_INSTALL_DIR}/build
 }
 
-export -f create_dirs_stage3
+export -f setup_chroot_dirs_stage3
 export -f init_mount_dirs_stage2
 export -f init_mount_dirs_stage3
 export -f install_qemu_static
