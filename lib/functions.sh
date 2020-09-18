@@ -205,7 +205,7 @@ copy_local_build_stage3() {
   [ ! -f "${STRAP_STAGE3_INSTALL_DIR}/build" ] || msg_fail "copy_local_build_stage3: Stage 3 build directory does not exist."
 
   msg "Copying local build directory contents to stage3 build directory..."
-  cp ${STRAP_BUILD_DIR}/* ${STRAP_STAGE3_INSTALL_DIR}/build
+  cp -r ${STRAP_BUILD_DIR}/* ${STRAP_STAGE3_INSTALL_DIR}/build
 }
 
 export -f setup_chroot_dirs_stage3
