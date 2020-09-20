@@ -14,11 +14,11 @@ cd ${STRAP_BUILD_DIR}/binutils
 
 mkdir -p binutils-build && cd binutils-build
 
+copy_local_build_stage3
+
 export CHROOT_CD=/build/binutils/binutils-build
 
-run_cmd_chroot_stage3 "cd /build; ls; pwd"
-
-copy_local_build_stage3
+run_cmd_chroot_stage3 "cd /build; ls -la; pwd"
 
 msg "Configuring binutils..."
 
