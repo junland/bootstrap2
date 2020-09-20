@@ -22,7 +22,7 @@ run_cmd_chroot_stage3 "cd /build; ls -la; pwd"
 
 msg "Configuring binutils..."
 
-run_cmd_chroot_stage3 "../configure $STRAP_TARGET_BINUTILOPTS \
+run_cmd_chroot_stage3 "pwd; ../configure $STRAP_TARGET_BINUTILOPTS \
                                                 --prefix=/usr \
                                                 --with-pic \
                                                 --enable-default-hash-style=gnu \
