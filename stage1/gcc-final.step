@@ -70,3 +70,9 @@ make -j${STRAP_PJOBS} install
 msg "Linking gcc for compatibility..."
 
 ln -sf $STRAP_TARGET-gcc "$STRAP_STAGE1_INSTALL_DIR"/bin/$STRAP_TARGET-cc
+
+msg "Adding full limits.h file..."
+
+cd ${STRAP_BUILD_DIR}/gcc-${GCC_VER}
+
+cat gcc/limitx.h gcc/glimits.h gcc/limity.h > `dirname $($STRAP_TARGET-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
