@@ -75,4 +75,4 @@ msg "Adding full limits.h file..."
 
 cd ${STRAP_BUILD_DIR}/gcc-${GCC_VER}
 
-cat gcc/limitx.h gcc/glimits.h gcc/limity.h > `dirname $($STRAP_TARGET-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
+cat gcc/limitx.h gcc/glimits.h gcc/limity.h > `dirname $($STRAP_TARGET-gcc -print-libgcc-file-name)`/include-fixed/limits.h
