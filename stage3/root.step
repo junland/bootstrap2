@@ -42,3 +42,8 @@ ln -svf /proc/self/fd/0 "${STRAP_STAGE3_INSTALL_DIR}"/dev/stdin
 ln -svf /proc/self/fd/1 "${STRAP_STAGE3_INSTALL_DIR}"/dev/stdout
 ln -svf /proc/self/fd/2 "${STRAP_STAGE3_INSTALL_DIR}"/dev/stderr
 ln -svf /proc/kcore "${STRAP_STAGE3_INSTALL_DIR}"/dev/core
+
+msg "Adding shell compatibility stage2 -> stage3..."
+ln -svf /stage2/usr/bin/sh "${STRAP_STAGE3_INSTALL_DIR}/usr/bin/sh"
+ln -svf /stage2/usr/bin/ash "${STRAP_STAGE3_INSTALL_DIR}/usr/bin/ash"
+ln -svf /stage2/usr/bin/bash "${STRAP_STAGE3_INSTALL_DIR}/usr/bin/bash"
