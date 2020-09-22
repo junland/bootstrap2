@@ -92,3 +92,8 @@ make -j${STRAP_PJOBS} AS_FOR_TARGET="$AS" LD_FOR_TARGET="$LD" -C ${STRAP_BUILD_D
 msg "Installing gcc..."
 
 make -j1 DESTDIR=${STRAP_STAGE2_INSTALL_DIR} install
+
+cat gcc/limitx.h gcc/glimits.h gcc/limity.h > ${STRAP_STAGE2_INSTALL_DIR}/lib/gcc/${STRAP_TARGET}/${GCC_VER}/install-tools/include/limits.h
+
+cat gcc/limitx.h gcc/glimits.h gcc/limity.h > ${STRAP_STAGE2_INSTALL_DIR}/lib/gcc/${STRAP_TARGET}/${GCC_VER}/include-fixed/limits.h
+
