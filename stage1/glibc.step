@@ -49,7 +49,7 @@ msg "Configuring glibc..."
     --disable-profile \
     --without-cvs \
     --without-gd \
-    --cache-file=$STRAP_BUILD_DIR/glibc-build/configparms
+    --cache-file=$STRAP_BUILD_DIR/glibc-build/configparms \
     --disable-werror
 
 msg "Building glibc..."
