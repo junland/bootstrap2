@@ -11,6 +11,7 @@ cd ${STRAP_BUILD_DIR}
 
 export PATH="$STRAP_STAGE1_INSTALL_DIR/bin:$STRAP_DEFAULT_PATH"
 
+export BUILD_CC="gcc"
 export CC="$STRAP_TARGET-gcc"
 export CXX="$STRAP_TARGET-g++"
 export AR="$STRAP_TARGET-ar"
@@ -30,6 +31,7 @@ cd ${STRAP_BUILD_DIR}/glibc-build
 echo "libc_cv_forced_unwind=yes" > $STRAP_BUILD_DIR/glibc-build/configparms
 echo "libc_cv_c_cleanup=yes" >> $STRAP_BUILD_DIR/glibc-build/configparms
 echo "libc_cv_ssp=no" >> $STRAP_BUILD_DIR/glibc-build/configparms
+echo "libc_cv_ssp_strong=no" >> $STRAP_BUILD_DIR/glibc-build/configparms
 echo "slibdir=/usr/lib" >> $STRAP_BUILD_DIR/glibc-build/configparms
 echo "rtlddir=/usr/lib" >> $STRAP_BUILD_DIR/glibc-build/configparms
 
@@ -47,6 +49,7 @@ msg "Configuring glibc..."
     --disable-profile \
     --without-cvs \
     --without-gd \
+    --cache-file=$STRAP_BUILD_DIR/glibc-build/configparms \
     --disable-werror
 
 msg "Building glibc..."

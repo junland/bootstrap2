@@ -61,7 +61,7 @@ msg "Configuring gcc-final..."
 
 msg "Building gcc-final..."
 
-make -j${STRAP_PJOBS} all -C ${STRAP_BUILD_DIR}/gcc-build
+make -j${STRAP_PJOBS} AS_FOR_TARGET="${STRAP_TARGET}-as" LD_FOR_TARGET="${STRAP_TARGET}-ld" all -C ${STRAP_BUILD_DIR}/gcc-build
 
 msg "Installing gcc-final..."
 
