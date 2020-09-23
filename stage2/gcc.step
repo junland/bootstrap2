@@ -93,6 +93,8 @@ msg "Installing gcc..."
 
 make -j1 DESTDIR=${STRAP_STAGE2_INSTALL_DIR} install
 
+cd ${STRAP_BUILD_DIR}/gcc-${GCC_VER}
+
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h > ${STRAP_STAGE2_INSTALL_DIR}/lib/gcc/${STRAP_TARGET}/${GCC_VER}/install-tools/include/limits.h
 
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h > ${STRAP_STAGE2_INSTALL_DIR}/lib/gcc/${STRAP_TARGET}/${GCC_VER}/include-fixed/limits.h
