@@ -10,7 +10,7 @@ set -e
 
 check_target && download_sources && setup_dirs_stage3
 
-STEPS=(root linux-headers glibc zlib binutils)
+STEPS=(root linux-headers glibc zlib m4 flex binutils)
 
 setup_chroot_dirs_stage3 "$STRAP_STAGE3_INSTALL_DIR"
 
