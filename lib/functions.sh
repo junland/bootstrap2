@@ -24,9 +24,6 @@ check_target() {
 download_sources() {
     [ ! -z "${STRAP_SOURCES_DIR}" ] || msg_fail "download_sources: Sources directory not set."
     [ ! -z "${STRAP_ROOT_DIR}" ] || msg_fail "download_sources: Root directory not set."
-
-    # HACK: Add a extra line a newline at the end of the file.
-    echo -e "\n" >> $STRAP_SOURCES_DIR/SOURCES.list
     
     msg "Downloading sources..."
     while read -r url; do
