@@ -32,11 +32,11 @@ jobs:
       run: sudo mv -fv /etc/bash.bashrc /etc/bash.bashrc.NOUSE | true
     ### Actually run bootstrap process ###
     - name: build stage1
-      run: ../build-stage1.sh
+      run: ./stage1/stage1.sh
     - name: build stage2
-      run: ../build-stage2.sh
+      run: ./stage2/stage2.sh
     - name: build stage3
-      run: sudo SERPENT_TARGET=${STRAP_SELECTED_TARGET} ../build-stage3.sh
+      run: sudo SERPENT_TARGET=${STRAP_SELECTED_TARGET} ./stage3/stage3.sh
     ### Upload artifacts for stage1 ###
     - name: change ownership and archive stage1
       if: ${{ always() }}
