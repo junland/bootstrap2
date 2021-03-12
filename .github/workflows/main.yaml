@@ -15,7 +15,7 @@ jobs:
         target-arch: [x86_64, aarch64]
     env:
       ACTION_TGT_ARCH: ${{matrix.target-arch}}
-      STRAP_SELECTED_TARGET: ${{matrix.target-arch}}
+      SERPENT_TARGET: ${{matrix.target-arch}}
       DEBIAN_FRONTEND: noninteractive
       SCP_USER: ${{ secrets.USERNAME }}
       SCP_PASS: ${{ secrets.PASSWORD }}
@@ -32,11 +32,11 @@ jobs:
       run: sudo mv -fv /etc/bash.bashrc /etc/bash.bashrc.NOUSE | true
     ### Actually run bootstrap process ###
     - name: build stage1
-      run: ./build-stage1
+      run: ../build-stage1.sh
     - name: build stage2
-      run: ./build-stage2
+      run: ../build-stage2.sh
     - name: build stage3
-      run: sudo STRAP_SELECTED_TARGET=${STRAP_SELECTED_TARGET} ./build-stage3
+      run: sudo SERPENT_TARGET=${STRAP_SELECTED_TARGET} ../build-stage3.sh
     ### Upload artifacts for stage1 ###
     - name: change ownership and archive stage1
       if: ${{ always() }}

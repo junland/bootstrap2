@@ -1,0 +1,161 @@
+diff --git a/src/basic/arphrd-list.c b/src/basic/arphrd-list.c
+index 7e5570ab9f..360f18f52b 100644
+--- a/src/basic/arphrd-list.c
++++ b/src/basic/arphrd-list.c
+@@ -1,7 +1,7 @@
+ /* SPDX-License-Identifier: LGPL-2.1+ */
+ 
+ #include <errno.h>
+-#include <linux/if_arp.h>
++#include <net/if_arp.h>
+ #include <string.h>
+ 
+ #include "arphrd-list.h"
+diff --git a/src/basic/linux/if_bonding.h b/src/basic/linux/if_bonding.h
+index 45f3750aa8..3a4eb127fe 100644
+--- a/src/basic/linux/if_bonding.h
++++ b/src/basic/linux/if_bonding.h
+@@ -46,6 +46,7 @@
+ 
+ #include <linux/if.h>
+ #include <linux/types.h>
++#include <netinet/if_ether.h>
+ #include <linux/if_ether.h>
+ 
+ /* userland - kernel ABI version (2003/05/08) */
+diff --git a/src/basic/linux/if_bridge.h b/src/basic/linux/if_bridge.h
+index 42f7ca38ad..9553e4c394 100644
+--- a/src/basic/linux/if_bridge.h
++++ b/src/basic/linux/if_bridge.h
+@@ -15,6 +15,7 @@
+ #define _UAPI_LINUX_IF_BRIDGE_H
+ 
+ #include <linux/types.h>
++#include <netinet/if_ether.h>
+ #include <linux/if_ether.h>
+ #include <linux/in6.h>
+ 
+diff --git a/src/basic/linux/if_tun.h b/src/basic/linux/if_tun.h
+index 454ae31b93..e8bf4602e1 100644
+--- a/src/basic/linux/if_tun.h
++++ b/src/basic/linux/if_tun.h
+@@ -18,6 +18,7 @@
+ #define _UAPI__IF_TUN_H
+ 
+ #include <linux/types.h>
++#include <netinet/if_ether.h>
+ #include <linux/if_ether.h>
+ #include <linux/filter.h>
+ 
+diff --git a/src/basic/linux/netdevice.h b/src/basic/linux/netdevice.h
+index f3770c5b0f..e20b6a070f 100644
+--- a/src/basic/linux/netdevice.h
++++ b/src/basic/linux/netdevice.h
+@@ -27,6 +27,7 @@
+ #define _UAPI_LINUX_NETDEVICE_H
+ 
+ #include <linux/if.h>
++#include <netinet/if_ether.h>
+ #include <linux/if_ether.h>
+ #include <linux/if_packet.h>
+ #include <linux/if_link.h>
+diff --git a/src/libsystemd-network/sd-dhcp6-client.c b/src/libsystemd-network/sd-dhcp6-client.c
+index 66499f7be0..ef9ac17bad 100644
+--- a/src/libsystemd-network/sd-dhcp6-client.c
++++ b/src/libsystemd-network/sd-dhcp6-client.c
+@@ -5,7 +5,7 @@
+ 
+ #include <errno.h>
+ #include <sys/ioctl.h>
+-#include <linux/if_arp.h>
++#include <net/if_arp.h>
+ #include <linux/if_infiniband.h>
+ 
+ #include "sd-dhcp6-client.h"
+diff --git a/src/login/logind.h b/src/login/logind.h
+index e64ecce8e2..272fcfecd4 100644
+--- a/src/login/logind.h
++++ b/src/login/logind.h
+@@ -2,6 +2,7 @@
+ #pragma once
+ 
+ #include <stdbool.h>
++#include <sys/stat.h>
+ 
+ #include "sd-bus.h"
+ #include "sd-device.h"
+diff --git a/src/network/netdev/macsec.c b/src/network/netdev/macsec.c
+index 2ffa5ec8c6..d673faa31a 100644
+--- a/src/network/netdev/macsec.c
++++ b/src/network/netdev/macsec.c
+@@ -1,6 +1,7 @@
+ /* SPDX-License-Identifier: LGPL-2.1+ */
+ 
+ #include <netinet/in.h>
++#include <netinet/if_ether.h>
+ #include <linux/if_ether.h>
+ #include <linux/if_macsec.h>
+ #include <linux/genetlink.h>
+diff --git a/src/network/networkd-dhcp4.c b/src/network/networkd-dhcp4.c
+index d28c3e3806..e285a49610 100644
+--- a/src/network/networkd-dhcp4.c
++++ b/src/network/networkd-dhcp4.c
+@@ -3,7 +3,7 @@
+ #include <netinet/in.h>
+ #include <netinet/ip.h>
+ #include <linux/if.h>
+-#include <linux/if_arp.h>
++#include <net/if_arp.h>
+ 
+ #include "escape.h"
+ #include "alloc-util.h"
+diff --git a/src/network/networkd-dhcp6.c b/src/network/networkd-dhcp6.c
+index d671284b00..775b046d95 100644
+--- a/src/network/networkd-dhcp6.c
++++ b/src/network/networkd-dhcp6.c
+@@ -5,7 +5,7 @@
+ 
+ #include <netinet/in.h>
+ #include <linux/if.h>
+-#include <linux/if_arp.h>
++#include <net/if_arp.h>
+ 
+ #include "sd-dhcp6-client.h"
+ 
+diff --git a/src/network/networkd-link.c b/src/network/networkd-link.c
+index c3bc3415a8..cd855578f0 100644
+--- a/src/network/networkd-link.c
++++ b/src/network/networkd-link.c
+@@ -2,7 +2,7 @@
+ 
+ #include <netinet/in.h>
+ #include <linux/if.h>
+-#include <linux/if_arp.h>
++#include <net/if_arp.h>
+ #include <linux/if_link.h>
+ #include <unistd.h>
+ 
+diff --git a/src/shared/linux/ethtool.h b/src/shared/linux/ethtool.h
+index acf346be41..8bef997975 100644
+--- a/src/shared/linux/ethtool.h
++++ b/src/shared/linux/ethtool.h
+@@ -16,6 +16,7 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/types.h>
++#include <netinet/if_ether.h>
+ #include <linux/if_ether.h>
+ 
+ #ifndef __KERNEL__
+diff --git a/src/test/test-arphrd-list.c b/src/test/test-arphrd-list.c
+index d7352b54e0..f559411444 100644
+--- a/src/test/test-arphrd-list.c
++++ b/src/test/test-arphrd-list.c
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: LGPL-2.1+ */
+ 
+-#include <linux/if_arp.h>
++#include <net/if_arp.h>
+ 
+ #include "string-util.h"
+ #include "tests.h"

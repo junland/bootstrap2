@@ -1,0 +1,24 @@
+#!/bin/true
+set -e
+
+. $(dirname $(realpath -s $0))/common.sh
+
+extractSource m4
+cd m4-*
+
+patch -p1 < "${SERPENT_PATCHES_DIR}/m4/m4-1.4.18-glibc-change-work-around.patch"
+
+printInfo "Configuring m4"
+./configure --prefix=/usr \
+    --target="${SERPENT_TRIPLET}" \
+    --host="${SERPENT_HOST}" \
+    --libdir=/usr/lib \
+    --bindir=/usr/bin \
+    --sbindir=/usr/sbin
+
+
+printInfo "Building m4"
+make -j "${SERPENT_BUILD_JOBS}"
+
+printInfo "Installing m4"
+make -j "${SERPENT_BUILD_JOBS}" install DESTDIR="${SERPENT_INSTALL_DIR}"
