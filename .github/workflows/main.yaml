@@ -26,7 +26,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: install / update deps if not installed
       run: |
-        chmod .github/scripts/setup-host.sh
+        chmod +x .github/scripts/setup-host.sh
         sudo ./.github/scripts/setup-host.sh
     - name: use bash instead of dash
       run: echo "dash dash/sh boolean false" | sudo debconf-set-selections && sudo dpkg-reconfigure dash
